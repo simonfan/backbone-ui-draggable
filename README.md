@@ -1,0 +1,3 @@
+# backbone-ui-draggable[![Build Status](https://secure.travis-ci.org/simonfan/backbone-ui-draggable.png?branch=master)](http://travis-ci.org/simonfan/backbone-ui-draggable)
+
+Some module...
