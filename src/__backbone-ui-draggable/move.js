@@ -33,17 +33,18 @@ define(function (require, exports, module) {
 			model.set('left', left);
 			model.set(this.valueAttribute, this.toValue(model));
 
+
+			var previous = model.previous('left') || 0,
+				delta = model.get('left') - previous;
+
 			// events
 			if (!silent) {
-				var previous = model.previous('left') || 0,
-					delta = model.get('left') - previous;
-
 				this.trigger('move', this, { axis: 'x', delta: delta })
 					.trigger('move-x', this, delta);
 			}
 
 			// return remainder
-			return attemptedLeft - left;
+			return attemptedDelta - delta;
 
 		} else {
 
@@ -69,17 +70,17 @@ define(function (require, exports, module) {
 			model.set('top', top);
 			model.set(this.valueAttribute, this.toValue(model));
 
+			var previous = model.previous('top') || 0,
+				delta = model.get('top') - previous;
+
 			// events
 			if (!silent) {
-				var previous = model.previous('top') || 0,
-					delta = model.get('top') - previous;
-
 				this.trigger('move', this, { axis: 'y', delta: delta })
 					.trigger('move-y', this, delta);
 			}
 
 			// return remainder
-			return attemptedTop - top;
+			return attemptedDelta - delta;
 		} else {
 			return 0;
 		}

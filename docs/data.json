@@ -28,6 +28,18 @@
         }
     },
     "classes": {},
-    "classitems": [],
+    "classitems": [
+        {
+            "file": "src/index.js",
+            "line": 19,
+            "description": "Just adds 'px' string to numerical values.",
+            "itemtype": "method",
+            "name": "stringifyPositionalValue",
+            "access": "private",
+            "tagname": "",
+            "class": "",
+            "module": "BackboneUiDraggable"
+        }
+    ],
     "warnings": []
 }

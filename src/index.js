@@ -105,6 +105,14 @@ define(function (require, exports, module) {
 					y: e.pageY
 				};
 
+
+				var offset = this.$el.offset();
+
+				this.handlePosition = {
+					x: e.pageX - offset.left,
+					y: e.pageY - offset.top
+				};
+
 				this.$window
 					.on('mousemove', this.mousemove)
 					.on('mouseup', this.mouseup);
@@ -117,25 +125,32 @@ define(function (require, exports, module) {
 		},
 
 		mousemove: function mousemove(e) {
-			if ($(e.target).closest(this.$canvas).length === 1) {
 
-				var model = this.model,
-					last = this.lastPosition;
+			var last = this.lastPosition,
+				x = e.pageX,
+				y = e.pageY,
+				dx = x - last.x,
+				dy = y - last.y;
 
 
-				// x
-				this.moveX(e.pageX - last.x);
+			var offset = this.$el.offset(),
+				handleX = this.handlePosition.x + offset.left,
+				handleY = this.handlePosition.y + offset.top;
 
-				// y
-				this.moveY(e.pageY - last.y);
 
-				last.x = e.pageX;
-				last.y = e.pageY;
-
-				// preventDefault AND stopPropagation
-				return false;
-
+			if ((dx > 0 && x > handleX ) || (dx < 0 && x < handleX)) {
+				this.moveX(dx);
 			}
+
+			if ((dy > 0 && y > handleY) || (dy < 0 && y < handleY)) {
+				this.moveY(dy);
+			}
+
+			last.x = x;
+			last.y = y;
+
+			// preventDefault AND stopPropagation
+			return false;
 		},
 
 		mouseup: function mouseup() {

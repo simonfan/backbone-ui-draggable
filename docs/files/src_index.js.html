@@ -99,24 +99,195 @@
 define(function (require, exports, module) {
 	&#x27;use strict&#x27;;
 
-	var modelDock = require(&#x27;model-dock&#x27;),
-		$ = require(&#x27;jquery&#x27;);
+	var backbone = require(&#x27;lowercase-backbone&#x27;),
+		modelDock = require(&#x27;model-dock&#x27;),
+		$ = require(&#x27;jquery&#x27;),
+		jqueryUIPosition = require(&#x27;jquery-ui-position&#x27;);
+
+	/**
+	 * Just adds &#x27;px&#x27; string to numerical values.
+	 *
+	 * @method stringifyPositionalValue
+	 * @private
+	 */
+	var number = /^[0-9\-]+$/;
+	function stringifyPositionalValue(v) {
+		// [1] check if it is a number
+		return number.test(v) ? v + &#x27;px&#x27; : v;
+	}
+
 
 
 	var draggable = module.exports = modelDock.extend({
 		initialize: function initialize(options) {
+
+			backbone.view.prototype.initialize.call(this, options);
+
 			this.initializeModelDock(options);
+
+			this.initializeUIDraggable(options);
 		},
 
 		initializeUIDraggable: function initializeUIDraggable(options) {
 
+			// bind methods
+			_.bindAll(this, &#x27;mousedown&#x27;, &#x27;mousemove&#x27;, &#x27;mouseup&#x27;);
+
+			// canvas
+			this.$canvas = options.canvas || this.canvas || this.$el.parent();
+
+			// window
+			this.$window = $(window);
+
+				// canvas offset
+			var canvasOffset = this.$canvas.offset();
+
+
+
+			var data = $.extend({
+				status: &#x27;stopped&#x27;,
+
+				minX: 0,
+				maxX: this.$canvas.width() - this.$el.width(),
+
+				minY: 0,
+				maxY: this.$canvas.height() - this.$el.height()
+
+			}, this.$el.position(), options);
+
+			// set initial position
+
+			var model = this.model;
+
+			model.set(data);
+
+			// listen to changes on value attribute
+			var valueAttribute = this.valueAttribute;
+			this.listenTo(model, &#x27;change:&#x27; + valueAttribute, function (model, value) {
+
+				model.set(this.toPosition(value));
+
+			}, this);
+
+			// initialize value/position
+			if (model.get(valueAttribute)) {
+				model.set(this.toPosition(model.get(valueAttribute)));
+			} else {
+				model.set(valueAttribute, this.toValue(model));
+			}
+
+		},
+
+		events: {
+			mousedown: &#x27;mousedown&#x27;,
+		},
+
+		mousedown: function mousedown(e) {
+
+			if (this.$el.is(e.target)) {
+
+				this.model.set(&#x27;status&#x27;, &#x27;dragging&#x27;);
+
+				this.lastPosition = {
+					x: e.pageX,
+					y: e.pageY
+				};
+
+
+				var offset = this.$el.offset();
+
+				this.handlePosition = {
+					x: e.pageX - offset.left,
+					y: e.pageY - offset.top
+				};
+
+				this.$window
+					.on(&#x27;mousemove&#x27;, this.mousemove)
+					.on(&#x27;mouseup&#x27;, this.mouseup);
+
+				// preventDefault AND stopPropagation
+				// http://stackoverflow.com/questions/1357118/event-preventdefault-vs-return-false
+				return false;
+
+			}
+		},
+
+		mousemove: function mousemove(e) {
+
+			var last = this.lastPosition,
+				x = e.pageX,
+				y = e.pageY,
+				dx = x - last.x,
+				dy = y - last.y;
+
+
+			var offset = this.$el.offset(),
+				handleX = this.handlePosition.x + offset.left,
+				handleY = this.handlePosition.y + offset.top;
+
+
+			if ((dx &gt; 0 &amp;&amp; x &gt; handleX ) || (dx &lt; 0 &amp;&amp; x &lt; handleX)) {
+				this.moveX(dx);
+			}
+
+			if ((dy &gt; 0 &amp;&amp; y &gt; handleY) || (dy &lt; 0 &amp;&amp; y &lt; handleY)) {
+				this.moveY(dy);
+			}
+
+			last.x = x;
+			last.y = y;
+
+			// preventDefault AND stopPropagation
+			return false;
+		},
+
+		mouseup: function mouseup() {
+			this.$window.off(&#x27;mousemove&#x27;, this.mousemove);
+
+			delete this.lastPosition;
+
+			this.model.set(&#x27;status&#x27;, &#x27;stopped&#x27;);
+
+
+			// preventDefault AND stopPropagation
+			//return false;
+		},
+
+		axis: &#x27;xy&#x27;,
+
+		valueAttribute: &#x27;value&#x27;,
+
+		setValue: function setValue(value) {
+			this.model.set(this.valueAttribute, value);
+			return this;
+		},
+
+		toValue: function toValue(model) {
+			return &#x27;At &#x27; + model.get(&#x27;top&#x27;) + &#x27; x &#x27; + model.get(&#x27;left&#x27;);
+		},
+
+		toPosition: function toPosition(value) {
+			var values = value.split(&#x27;x&#x27;);
+
+			return {
+				top: values[0].replace(/[^0-9\-]/g, &#x27;&#x27;),
+				left: values[1].replace(/[^0-9\-]/g, &#x27;&#x27;),
+			};
 		},
 
 		map: {
-			left: [&#x27;-&gt;css:left&#x27;, &#x27;[data-attribute=&quot;left&quot;]&#x27;],
-			top: [&#x27;-&gt;css:top&#x27;, &#x27;[data-attribute=&quot;top&quot;]&#x27;]
+			left: &#x27;-&gt;css:left&#x27;,
+			top: &#x27;-&gt;css:top&#x27;,
+		},
+
+		stringifiers: {
+			left: stringifyPositionalValue,
+			top: stringifyPositionalValue
 		}
 	});
+
+	// extend
+	draggable.proto(require(&#x27;./__backbone-ui-draggable/move&#x27;));
 });
 
     </pre>
