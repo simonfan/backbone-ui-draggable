@@ -13,9 +13,8 @@ define(function (require, exports, module) {
 
 	var backbone = require('lowercase-backbone'),
 		modelDock = require('model-dock'),
-		$ = require('jquery'),
-		jqueryUIPosition = require('jquery-ui-position');
-
+		_ = require('lodash'),
+		$ = require('jquery');
 	/**
 	 * Just adds 'px' string to numerical values.
 	 *

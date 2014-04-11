@@ -31,7 +31,7 @@
     "classitems": [
         {
             "file": "src/index.js",
-            "line": 19,
+            "line": 18,
             "description": "Just adds 'px' string to numerical values.",
             "itemtype": "method",
             "name": "stringifyPositionalValue",
