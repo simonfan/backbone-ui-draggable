@@ -1,4 +1,4 @@
-define(['backbone-ui-draggable', 'jquery'], function (draggable, $) {
+define(['backbone-ui-draggable', 'jquery', 'backbone'], function (draggable, $, Backbone) {
 	draggable({
 		el: $('#draggable'),
 
@@ -7,10 +7,14 @@ define(['backbone-ui-draggable', 'jquery'], function (draggable, $) {
 			top: ['->css:top', '[data-attribute="top"]'],
 			status: '[data-attribute="status"]',
 			value: '[data-attribute="value"]',
-		}
-	});
+		},
 
-	$('#jq-draggable').draggable({
-		containment: 'parent'
+		model: new Backbone.Model({
+			minX: 20,
+			maxX: 1000,
+
+			minY: -40,
+			maxY: 300
+		})
 	});
 });

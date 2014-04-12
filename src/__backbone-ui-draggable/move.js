@@ -15,6 +15,11 @@ define(function (require, exports, module) {
 	}
 
 
+	function numberify(v) {
+		return parseInt(v, 10);
+	}
+
+
 	exports.moveX = function moveX(attemptedDelta, silent) {
 
 		if (attemptedDelta) {
@@ -27,12 +32,15 @@ define(function (require, exports, module) {
 				previousLeft = parseInt(model.get('left'), 10),
 
 				// convert the attemptedDelta into attemptedLeft
-				attemptedLeft = previousLeft + attemptedDelta;
+				attemptedLeft = previousLeft + attemptedDelta,
+
+				minX = numberify(model.get('minX')),
+				maxX = numberify(model.get('maxX')) - numberify(this.$el.width());
 
 				// get the allowed left
-			var left = fitValueWithin(attemptedLeft, model.get('minX'), model.get('maxX'));
+			var left = fitValueWithin(attemptedLeft, minX, maxX);
 
-			model.set('left', left);
+			model.set('left', numberify(left));
 			model.set(this.valueAttribute, this.toValue(model));
 
 
@@ -65,12 +73,15 @@ define(function (require, exports, module) {
 				previousTop = parseInt(model.get('top'), 10),
 
 				// convert the attemptedDelta into attemptedLeft
-				attemptedTop = previousTop + attemptedDelta;
+				attemptedTop = previousTop + attemptedDelta,
+
+				minY = numberify(model.get('minY')),
+				maxY = numberify(model.get('maxY')) - numberify(this.$el.height());
 
 				// get the allowed top
-			var top = fitValueWithin(attemptedTop, model.get('minY'), model.get('maxY'));
+			var top = fitValueWithin(attemptedTop, minY, maxY);
 
-			model.set('top', top);
+			model.set('top', numberify(top));
 			model.set(this.valueAttribute, this.toValue(model));
 
 			var delta = model.get('top') - previousTop;

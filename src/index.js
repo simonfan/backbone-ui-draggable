@@ -21,10 +21,14 @@ define(function (require, exports, module) {
 	 * @method stringifyPositionalValue
 	 * @private
 	 */
-	var number = /^[0-9\-]+$/;
+	var isNumber = /^[0-9\-]+$/;
 	function stringifyPositionalValue(v) {
-		// [1] check if it is a number
-		return number.test(v) ? v + 'px' : v;
+		// [1] check if it is a isNumber
+		return isNumber.test(v) ? v + 'px' : v;
+	}
+
+	function numberify(v) {
+		return parseInt(v);
 	}
 
 
@@ -48,18 +52,23 @@ define(function (require, exports, module) {
 			this.$window = $(window);
 
 			// canvas
-			this.$canvas = options.canvas || this.canvas || this.$window;
+			this.$canvas = options.canvas || this.canvas || this.$el.parent();
+
+			var pos = this.$el.position();
 
 			var data = $.extend({
 				status: 'stopped',
 
-				minX: 0,
-				maxX: this.$canvas.width() - this.$el.width(),
+		//		minX: 0,
+		//		maxX: numberify(this.$canvas.width()) - numberify(this.$el.width()),
 
-				minY: 0,
-				maxY: this.$canvas.height() - this.$el.height()
+		//		minY: 0,
+		//		maxY: numberify(this.$canvas.height()) - numberify(this.$el.height()),
 
-			}, this.$el.position(), options);
+				top: numberify(pos.top),
+				left: numberify(pos.left)
+
+			}, options);
 
 			// set initial position
 
@@ -71,13 +80,23 @@ define(function (require, exports, module) {
 			var valueAttribute = this.valueAttribute;
 			this.listenTo(model, 'change:' + valueAttribute, function (model, value) {
 
-				model.set(this.toPosition(value));
+				var pos = this.toPosition(model.get(valueAttribute));
+
+				model.set({
+					top: numberify(pos.top),
+					left: numberify(pos.left)
+				});
 
 			}, this);
 
 			// initialize value/position
 			if (model.get(valueAttribute)) {
-				model.set(this.toPosition(model.get(valueAttribute)));
+				var pos = this.toPosition(model.get(valueAttribute));
+
+				model.set({
+					top: numberify(pos.top),
+					left: numberify(pos.left)
+				});
 			} else {
 				model.set(valueAttribute, this.toValue(model));
 			}
