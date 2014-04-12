@@ -132,16 +132,11 @@ define(function (require, exports, module) {
 			// bind methods
 			_.bindAll(this, &#x27;mousedown&#x27;, &#x27;mousemove&#x27;, &#x27;mouseup&#x27;);
 
-			// canvas
-			this.$canvas = options.canvas || this.canvas || this.$el.parent();
-
 			// window
 			this.$window = $(window);
 
-				// canvas offset
-			var canvasOffset = this.$canvas.offset();
-
-
+			// canvas
+			this.$canvas = options.canvas || this.canvas || this.$window;
 
 			var data = $.extend({
 				status: &#x27;stopped&#x27;,
@@ -183,7 +178,7 @@ define(function (require, exports, module) {
 
 		mousedown: function mousedown(e) {
 
-			if (this.$el.is(e.target)) {
+			if (this.$el.is(e.target) &amp;&amp; e.which === 1) {
 
 				this.model.set(&#x27;status&#x27;, &#x27;dragging&#x27;);
 
@@ -203,6 +198,8 @@ define(function (require, exports, module) {
 				this.$window
 					.on(&#x27;mousemove&#x27;, this.mousemove)
 					.on(&#x27;mouseup&#x27;, this.mouseup);
+
+				this.trigger(&#x27;movestart&#x27;, this);
 
 				// preventDefault AND stopPropagation
 				// http://stackoverflow.com/questions/1357118/event-preventdefault-vs-return-false
@@ -247,6 +244,8 @@ define(function (require, exports, module) {
 
 			this.model.set(&#x27;status&#x27;, &#x27;stopped&#x27;);
 
+
+			this.trigger(&#x27;movestop&#x27;, this);
 
 			// preventDefault AND stopPropagation
 			//return false;

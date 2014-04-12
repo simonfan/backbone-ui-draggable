@@ -24,8 +24,10 @@ define(function (require, exports, module) {
 			}
 
 			var model = this.model,
+				previousLeft = parseInt(model.get('left'), 10),
+
 				// convert the attemptedDelta into attemptedLeft
-				attemptedLeft = parseInt(model.get('left'), 10) + attemptedDelta;
+				attemptedLeft = previousLeft + attemptedDelta;
 
 				// get the allowed left
 			var left = fitValueWithin(attemptedLeft, model.get('minX'), model.get('maxX'));
@@ -34,8 +36,7 @@ define(function (require, exports, module) {
 			model.set(this.valueAttribute, this.toValue(model));
 
 
-			var previous = model.previous('left') || 0,
-				delta = model.get('left') - previous;
+			var delta = model.get('left') - previousLeft;
 
 			// events
 			if (!silent) {
@@ -61,8 +62,10 @@ define(function (require, exports, module) {
 			}
 
 			var model = this.model,
+				previousTop = parseInt(model.get('top'), 10),
+
 				// convert the attemptedDelta into attemptedLeft
-				attemptedTop = parseInt(model.get('top'), 10) + attemptedDelta;
+				attemptedTop = previousTop + attemptedDelta;
 
 				// get the allowed top
 			var top = fitValueWithin(attemptedTop, model.get('minY'), model.get('maxY'));
@@ -70,8 +73,7 @@ define(function (require, exports, module) {
 			model.set('top', top);
 			model.set(this.valueAttribute, this.toValue(model));
 
-			var previous = model.previous('top') || 0,
-				delta = model.get('top') - previous;
+			var delta = model.get('top') - previousTop;
 
 			// events
 			if (!silent) {
