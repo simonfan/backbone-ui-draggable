@@ -100,7 +100,7 @@ define(function (require, exports, module) {
 	};
 
 	exports.moveToLeft = function moveToLeft(attemptedDelta, silent) {
-		return this.moveX(-1 * attemptedDelta, silent);
+		return -1 * this.moveX(-1 * attemptedDelta, silent);
 	};
 
 	exports.moveToRight = function moveToRight(attemptedDelta, silent) {
@@ -108,7 +108,7 @@ define(function (require, exports, module) {
 	};
 
 	exports.moveToTop = function moveToTop(attemptedDelta, silent) {
-		return this.moveY(-1 * attemptedDelta, silent);
+		return -1 * this.moveY(-1 * attemptedDelta, silent);
 	};
 
 	exports.moveToBottom = function moveToBottom(attemptedDelta, silent) {

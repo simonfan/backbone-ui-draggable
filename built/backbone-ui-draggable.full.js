@@ -100,7 +100,7 @@ define('__backbone-ui-draggable/move',['require','exports','module'],function (r
 	};
 
 	exports.moveToLeft = function moveToLeft(attemptedDelta, silent) {
-		return this.moveX(-1 * attemptedDelta, silent);
+		return -1 * this.moveX(-1 * attemptedDelta, silent);
 	};
 
 	exports.moveToRight = function moveToRight(attemptedDelta, silent) {
@@ -108,7 +108,7 @@ define('__backbone-ui-draggable/move',['require','exports','module'],function (r
 	};
 
 	exports.moveToTop = function moveToTop(attemptedDelta, silent) {
-		return this.moveY(-1 * attemptedDelta, silent);
+		return -1 * this.moveY(-1 * attemptedDelta, silent);
 	};
 
 	exports.moveToBottom = function moveToBottom(attemptedDelta, silent) {
