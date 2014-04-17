@@ -1,6 +1,8 @@
 define(function (require, exports, module) {
 	'use strict';
 
+	var _ = require('lodash');
+
 	function fitValueWithin(value, min, max) {
 
 		if (!isNaN(min)) {
@@ -20,9 +22,11 @@ define(function (require, exports, module) {
 	}
 
 
-	exports.moveX = function moveX(attemptedDelta, silent) {
+	exports.moveX = function moveX(attemptedDelta, options) {
 
 		if (attemptedDelta) {
+
+			options = options || {};
 
 			if (this.axis.indexOf('x') === -1) {
 				return attemptedDelta;
@@ -47,9 +51,11 @@ define(function (require, exports, module) {
 			var delta = model.get('left') - previousLeft;
 
 			// events
-			if (!silent) {
-				this.trigger('move', this, { axis: 'x', delta: delta })
-					.trigger('move-x', this, delta);
+			if (!options.silent) {
+				var eventData = _.assign({ axis: 'x', delta: delta }, options);
+
+				this.trigger('move', this, eventData)
+					.trigger('move-x', this, eventData);
 			}
 
 			// return remainder
@@ -61,9 +67,11 @@ define(function (require, exports, module) {
 		}
 	};
 
-	exports.moveY = function moveY(attemptedDelta, silent) {
+	exports.moveY = function moveY(attemptedDelta, options) {
 
 		if (attemptedDelta) {
+
+			options = options || {};
 
 			if (this.axis.indexOf('y') === -1) {
 				return attemptedDelta;
@@ -87,9 +95,11 @@ define(function (require, exports, module) {
 			var delta = model.get('top') - previousTop;
 
 			// events
-			if (!silent) {
-				this.trigger('move', this, { axis: 'y', delta: delta })
-					.trigger('move-y', this, delta);
+			if (!options.silent) {
+				var eventData = _.assign({ axis: 'y', delta: delta }, options);
+
+				this.trigger('move', this, eventData)
+					.trigger('move-y', this, eventData);
 			}
 
 			// return remainder
