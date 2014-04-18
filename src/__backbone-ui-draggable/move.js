@@ -3,24 +3,7 @@ define(function (require, exports, module) {
 
 	var _ = require('lodash');
 
-	function fitValueWithin(value, min, max) {
-
-		if (!isNaN(min)) {
-			value = value > min ? value : min;
-		}
-
-		if (!isNaN(max)) {
-			value = value < max ? value : max;
-		}
-
-		return value;
-	}
-
-
-	function numberify(v) {
-		return parseInt(v, 10);
-	}
-
+	var h = require('./helpers');
 
 	exports.moveX = function moveX(attemptedDelta, options) {
 
@@ -36,15 +19,24 @@ define(function (require, exports, module) {
 				previousLeft = parseInt(model.get('left'), 10),
 
 				// convert the attemptedDelta into attemptedLeft
-				attemptedLeft = previousLeft + attemptedDelta,
+				attemptedLeft = previousLeft + attemptedDelta;
 
-				minX = numberify(model.get('minX')),
-				maxX = numberify(model.get('maxX')) - numberify(this.$el.width());
+			var width = h.numberify(this.$el.width());
+
+			// minimums
+			var minLeft = h.numberify(model.get('minLeft')),
+				minRight = h.numberify(model.get('minRight')),
+				min = h.max(minLeft, minRight - width);
+
+			// maximums
+			var maxLeft = h.numberify(model.get('maxLeft')),
+				maxRight = h.numberify(model.get('maxRight')),
+				max = h.min(maxLeft, maxRight - width);
 
 				// get the allowed left
-			var left = fitValueWithin(attemptedLeft, minX, maxX);
+			var left = h.fitValueWithin(attemptedLeft, min, max);
 
-			model.set('left', numberify(left));
+			model.set('left', h.numberify(left));
 			model.set(this.valueAttribute, this.toValue(model));
 
 
@@ -86,16 +78,25 @@ define(function (require, exports, module) {
 			var model = this.model,
 				previousTop = parseInt(model.get('top'), 10),
 
-				// convert the attemptedDelta into attemptedLeft
-				attemptedTop = previousTop + attemptedDelta,
+				// convert the attemptedDelta into attemptedTop
+				attemptedTop = previousTop + attemptedDelta;
 
-				minY = numberify(model.get('minY')),
-				maxY = numberify(model.get('maxY')) - numberify(this.$el.height());
+			var height = h.numberify(this.$el.height());
+
+			// minimums
+			var minTop = h.numberify(model.get('minTop')),
+				minBottom = h.numberify(model.get('minBottom')),
+				min = h.max(minTop, minBottom - height);
+
+			// maximums
+			var maxTop = h.numberify(model.get('maxTop')),
+				maxBottom = h.numberify(model.get('maxBottom')),
+				max = h.min(maxTop, maxBottom - height);
 
 				// get the allowed top
-			var top = fitValueWithin(attemptedTop, minY, maxY);
+			var top = h.fitValueWithin(attemptedTop, min, max);
 
-			model.set('top', numberify(top));
+			model.set('top', h.numberify(top));
 			model.set(this.valueAttribute, this.toValue(model));
 
 			var delta = model.get('top') - previousTop;

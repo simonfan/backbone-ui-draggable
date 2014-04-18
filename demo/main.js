@@ -15,11 +15,12 @@ function (draggable            ,  $      ,  Backbone ,  modelDock  , undefined  
 		},
 
 		model: new Backbone.Model({
-			minX: 20,
-			maxX: 1000,
+			minLeft: 20,
+			maxRight: 1000,
 
-			minY: -40,
-			maxY: 300
+			minTop: -40,
+			maxTop: 0,
+			maxBottom: 300
 		})
 	});
 

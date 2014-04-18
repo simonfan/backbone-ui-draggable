@@ -1,9 +1,31 @@
-define('__backbone-ui-draggable/move',['require','exports','module','lodash'],function (require, exports, module) {
+define('__backbone-ui-draggable/helpers',['require','exports','module'],function (require, exports, module) {
 	
 
-	var _ = require('lodash');
+	exports.min = function min(v1, v2) {
+		if (isNaN(v1)) {
+			return v2;
+		} else if (isNaN(v2)) {
+			return v1;
+		} else {
 
-	function fitValueWithin(value, min, max) {
+			return v1 < v2 ? v1 : v2;
+		}
+	};
+
+	exports.max = function max(v1, v2) {
+		if (isNaN(v1)) {
+			return v2;
+		} else if (isNaN(v2)) {
+			return v1;
+		} else {
+			return v1 > v2 ? v1 : v2;
+		}
+
+	};
+
+
+
+	exports.fitValueWithin = function fitValueWithin(value, min, max) {
 
 		if (!isNaN(min)) {
 			value = value > min ? value : min;
@@ -14,13 +36,20 @@ define('__backbone-ui-draggable/move',['require','exports','module','lodash'],fu
 		}
 
 		return value;
-	}
+	};
 
 
-	function numberify(v) {
+	exports.numberify = function numberify(v) {
 		return parseInt(v, 10);
-	}
+	};
+});
 
+define('__backbone-ui-draggable/move',['require','exports','module','lodash','./helpers'],function (require, exports, module) {
+	
+
+	var _ = require('lodash');
+
+	var h = require('./helpers');
 
 	exports.moveX = function moveX(attemptedDelta, options) {
 
@@ -36,15 +65,24 @@ define('__backbone-ui-draggable/move',['require','exports','module','lodash'],fu
 				previousLeft = parseInt(model.get('left'), 10),
 
 				// convert the attemptedDelta into attemptedLeft
-				attemptedLeft = previousLeft + attemptedDelta,
+				attemptedLeft = previousLeft + attemptedDelta;
 
-				minX = numberify(model.get('minX')),
-				maxX = numberify(model.get('maxX')) - numberify(this.$el.width());
+			var width = h.numberify(this.$el.width());
+
+			// minimums
+			var minLeft = h.numberify(model.get('minLeft')),
+				minRight = h.numberify(model.get('minRight')),
+				min = h.max(minLeft, minRight - width);
+
+			// maximums
+			var maxLeft = h.numberify(model.get('maxLeft')),
+				maxRight = h.numberify(model.get('maxRight')),
+				max = h.min(maxLeft, maxRight - width);
 
 				// get the allowed left
-			var left = fitValueWithin(attemptedLeft, minX, maxX);
+			var left = h.fitValueWithin(attemptedLeft, min, max);
 
-			model.set('left', numberify(left));
+			model.set('left', h.numberify(left));
 			model.set(this.valueAttribute, this.toValue(model));
 
 
@@ -86,16 +124,25 @@ define('__backbone-ui-draggable/move',['require','exports','module','lodash'],fu
 			var model = this.model,
 				previousTop = parseInt(model.get('top'), 10),
 
-				// convert the attemptedDelta into attemptedLeft
-				attemptedTop = previousTop + attemptedDelta,
+				// convert the attemptedDelta into attemptedTop
+				attemptedTop = previousTop + attemptedDelta;
 
-				minY = numberify(model.get('minY')),
-				maxY = numberify(model.get('maxY')) - numberify(this.$el.height());
+			var height = h.numberify(this.$el.height());
+
+			// minimums
+			var minTop = h.numberify(model.get('minTop')),
+				minBottom = h.numberify(model.get('minBottom')),
+				min = h.max(minTop, minBottom - height);
+
+			// maximums
+			var maxTop = h.numberify(model.get('maxTop')),
+				maxBottom = h.numberify(model.get('maxBottom')),
+				max = h.min(maxTop, maxBottom - height);
 
 				// get the allowed top
-			var top = fitValueWithin(attemptedTop, minY, maxY);
+			var top = h.fitValueWithin(attemptedTop, min, max);
 
-			model.set('top', numberify(top));
+			model.set('top', h.numberify(top));
 			model.set(this.valueAttribute, this.toValue(model));
 
 			var delta = model.get('top') - previousTop;
