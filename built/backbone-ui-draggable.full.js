@@ -282,11 +282,15 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 
 
 			if ((dx > 0 && x > handleX ) || (dx < 0 && x < handleX)) {
-				this.moveX(dx);
+				this.moveX(dx, {
+					agent: 'mousemove'
+				});
 			}
 
 			if ((dy > 0 && y > handleY) || (dy < 0 && y < handleY)) {
-				this.moveY(dy);
+				this.moveY(dy, {
+					agent: 'mousemove'
+				});
 			}
 
 			last.x = x;

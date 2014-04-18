@@ -242,11 +242,15 @@ define(function (require, exports, module) {
 
 
 			if ((dx &gt; 0 &amp;&amp; x &gt; handleX ) || (dx &lt; 0 &amp;&amp; x &lt; handleX)) {
-				this.moveX(dx);
+				this.moveX(dx, {
+					agent: &#x27;mousemove&#x27;
+				});
 			}
 
 			if ((dy &gt; 0 &amp;&amp; y &gt; handleY) || (dy &lt; 0 &amp;&amp; y &lt; handleY)) {
-				this.moveY(dy);
+				this.moveY(dy, {
+					agent: &#x27;mousemove&#x27;
+				});
 			}
 
 			last.x = x;
