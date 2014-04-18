@@ -1,12 +1,11 @@
 {
   "name": "backbone-ui-draggable",
   "main": "built/backbone-ui-draggable.js",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Some module...",
   "dependencies": {
     "model-dock": "~0.3.6",
     "jquery": "~2.1.0",
-    "jquery-ui": "~1.10.4",
     "lowercase-backbone": "~0.2.5"
   },
   "devDependencies": {
@@ -14,7 +13,8 @@
     "requirejs-text": "*",
     "underscore": "*",
     "jquery": "*",
-    "qunit": "*"
+    "qunit": "*",
+    "jquery-ui": "~1.10.4"
   },
   "resolutions": {
     "jquery": "~2.1.0"

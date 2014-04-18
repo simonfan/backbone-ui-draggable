@@ -29,6 +29,7 @@
 
 		#jq-draggable {
 			background-color: green;
+			color: #fff;
 			position: absolute;
 			top: 100px;
 		}
@@ -56,7 +57,19 @@
 
 	<a href="../index.html">Menu</a>
 
+	<div id="event-data">
+		<h1>Eventa data</h1>
+		axis:
+		<span data-attribute="axis"></span><br>
+		delta:
+		<span data-attribute="delta"></span><br>
+		direction:
+		<span data-attribute="direction"></span><br>
+	</div>
+
+
 	<div id="canvas">
+		<h1>Canvas</h1>
 		<div id="draggable">
 			top: <input data-attribute="top" type="input">
 			left: <input data-attribute="left" type="input">
@@ -64,9 +77,8 @@
 			value: <input data-attribute="value" type="input">
 		</div>
 		<div id="jq-draggable">
-			top: <input data-attribute="top" type="input">
-			left: <input data-attribute="left" type="input">
-			status: <input data-attribute="status" type="input">
+			JQUERY-UI<br>
+			DRAGGABLE
 		</div>
 	</div>
 

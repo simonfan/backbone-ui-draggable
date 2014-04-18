@@ -51,8 +51,14 @@ define('__backbone-ui-draggable/move',['require','exports','module','lodash'],fu
 			var delta = model.get('left') - previousLeft;
 
 			// events
-			if (!options.silent) {
-				var eventData = _.assign({ axis: 'x', delta: delta }, options);
+			if (!options.silent && delta !== 0) {
+				var eventData = _.assign({
+					axis: 'x',
+					delta: delta,
+
+					direction: delta > 0 ? 'right' : 'left'
+
+				}, options);
 
 				this.trigger('move', this, eventData)
 					.trigger('move-x', this, eventData);
@@ -95,8 +101,14 @@ define('__backbone-ui-draggable/move',['require','exports','module','lodash'],fu
 			var delta = model.get('top') - previousTop;
 
 			// events
-			if (!options.silent) {
-				var eventData = _.assign({ axis: 'y', delta: delta }, options);
+			if (!options.silent && delta !== 0) {
+				var eventData = _.assign({
+
+					axis: 'y',
+					delta: delta,
+					direction: delta > 0 ? 'bottom' : 'top',
+
+				}, options);
 
 				this.trigger('move', this, eventData)
 					.trigger('move-y', this, eventData);
