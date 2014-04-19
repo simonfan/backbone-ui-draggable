@@ -43,7 +43,7 @@ define(function (require, exports, module) {
 	 * @method stringifyPositionalValue
 	 * @private
 	 */
-	var isNumber = /^[0-9\-]+$/;
+	var isNumber = /^-?\d*(\.\d+)?$/;
 	exports.stringifyPositionalValue = function stringifyPositionalValue(v) {
 		// [1] check if it is a isNumber
 		return isNumber.test(v) ? v + 'px' : v;

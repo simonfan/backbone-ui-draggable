@@ -5,6 +5,33 @@ define(function (require, exports, module) {
 
 	var h = require('./helpers');
 
+	exports.xAllowedDelta = function xAllowedDelta(attemptedDelta) {
+
+		var model = this.model,
+			previousLeft = parseFloat(model.get('left')),
+
+			// convert the attemptedDelta into attemptedLeft
+			attemptedLeft = previousLeft + attemptedDelta;
+
+		var width = parseFloat(this.$el.width());
+
+		// minimums
+		var minLeft = parseFloat(model.get('minLeft')),
+			minRight = parseFloat(model.get('minRight')),
+			min = h.max(minLeft, minRight - width);
+
+		// maximums
+		var maxLeft = parseFloat(model.get('maxLeft')),
+			maxRight = parseFloat(model.get('maxRight')),
+			max = h.min(maxLeft, maxRight - width);
+
+			// get the allowed left
+		var left = h.fitValueWithin(attemptedLeft, min, max);
+
+			// return the allowed delta
+		return left - previousLeft;
+	};
+
 	exports.moveX = function moveX(attemptedDelta, options) {
 
 		if (attemptedDelta) {
@@ -15,32 +42,17 @@ define(function (require, exports, module) {
 				return attemptedDelta;
 			}
 
-			var model = this.model,
-				previousLeft = parseInt(model.get('left'), 10),
+			var model = this.model;
 
-				// convert the attemptedDelta into attemptedLeft
-				attemptedLeft = previousLeft + attemptedDelta;
 
-			var width = parseInt(this.$el.width(), 10);
+			// get true delta
+			var delta = options.force ? attemptedDelta : this.xAllowedDelta(attemptedDelta);
 
-			// minimums
-			var minLeft = parseInt(model.get('minLeft'), 10),
-				minRight = parseInt(model.get('minRight'), 10),
-				min = h.max(minLeft, minRight - width);
+			// set left
+			model.set('left', parseFloat(model.get('left')) + delta);
 
-			// maximums
-			var maxLeft = parseInt(model.get('maxLeft'), 10),
-				maxRight = parseInt(model.get('maxRight'), 10),
-				max = h.min(maxLeft, maxRight - width);
-
-				// get the allowed left
-			var left = h.fitValueWithin(attemptedLeft, min, max);
-
-			model.set('left', parseInt(left), 10);
+			// set value attribute
 			model.set(this.valueAttribute, this.toValue(model));
-
-
-			var delta = model.get('left') - previousLeft;
 
 			// events
 			if (!options.silent && delta !== 0) {
@@ -65,6 +77,35 @@ define(function (require, exports, module) {
 		}
 	};
 
+
+	exports.yAllowedDelta = function yAllowedDelta(attemptedDelta) {
+
+		var model = this.model,
+			previousTop = parseFloat(model.get('top')),
+
+			// convert the attemptedDelta into attemptedTop
+			attemptedTop = previousTop + attemptedDelta;
+
+		var height = parseFloat(this.$el.height());
+
+		// minimums
+		var minTop = parseFloat(model.get('minTop')),
+			minBottom = parseFloat(model.get('minBottom')),
+			min = h.max(minTop, minBottom - height);
+
+		// maximums
+		var maxTop = parseFloat(model.get('maxTop')),
+			maxBottom = parseFloat(model.get('maxBottom')),
+			max = h.min(maxTop, maxBottom - height);
+
+			// get the allowed top
+		var top = h.fitValueWithin(attemptedTop, min, max);
+
+		// return allowed delta
+		return top - previousTop;
+	};
+
+
 	exports.moveY = function moveY(attemptedDelta, options) {
 
 		if (attemptedDelta) {
@@ -75,31 +116,16 @@ define(function (require, exports, module) {
 				return attemptedDelta;
 			}
 
-			var model = this.model,
-				previousTop = parseInt(model.get('top'), 10),
+			var model = this.model;
 
-				// convert the attemptedDelta into attemptedTop
-				attemptedTop = previousTop + attemptedDelta;
+			// get allowed delta
+			var delta = this.yAllowedDelta(attemptedDelta);
 
-			var height = parseInt(this.$el.height(), 10);
+			// set new top
+			model.set('top', parseFloat(model.get('top')) + delta);
 
-			// minimums
-			var minTop = parseInt(model.get('minTop'), 10),
-				minBottom = parseInt(model.get('minBottom'), 10),
-				min = h.max(minTop, minBottom - height);
-
-			// maximums
-			var maxTop = parseInt(model.get('maxTop'), 10),
-				maxBottom = parseInt(model.get('maxBottom'), 10),
-				max = h.min(maxTop, maxBottom - height);
-
-				// get the allowed top
-			var top = h.fitValueWithin(attemptedTop, min, max);
-
-			model.set('top', parseInt(top));
+			// update value
 			model.set(this.valueAttribute, this.toValue(model));
-
-			var delta = model.get('top') - previousTop;
 
 			// events
 			if (!options.silent && delta !== 0) {

@@ -44,8 +44,8 @@ define(function (require, exports, module) {
 			var data = $.extend({
 				status: 'stopped',
 				disabled: false,
-				top: parseInt(pos.top, 10),
-				left: parseInt(pos.left, 10)
+				top: parseFloat(pos.top),
+				left: parseFloat(pos.left)
 
 			}, options);
 
@@ -75,11 +75,14 @@ define(function (require, exports, module) {
 			this.initializeDraggableValuePosition(options);
 		},
 
-		when: require('./__backbone-ui-draggable/when'),
-
 		events: {
 			mousedown: 'mousedown',
 		},
+
+
+		when: require('./__backbone-ui-draggable/when'),
+
+		animate: require('./__backbone-ui-draggable/animate'),
 
 		/**
 		 * Set the disabled option to true.

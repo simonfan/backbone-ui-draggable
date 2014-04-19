@@ -43,7 +43,7 @@ define('__backbone-ui-draggable/helpers',['require','exports','module'],function
 	 * @method stringifyPositionalValue
 	 * @private
 	 */
-	var isNumber = /^[0-9\-]+$/;
+	var isNumber = /^-?\d*(\.\d+)?$/;
 	exports.stringifyPositionalValue = function stringifyPositionalValue(v) {
 		// [1] check if it is a isNumber
 		return isNumber.test(v) ? v + 'px' : v;
@@ -104,6 +104,127 @@ define('__backbone-ui-draggable/when',['require','exports','module','object-quer
 	};
 });
 
+define('__backbone-ui-draggable/animate',['require','exports','module','lodash'],function (require, exports, module) {
+	
+
+	var _ = require('lodash');
+
+	function update(delta) {
+
+		this.moveX(delta.left, { force: true });
+		this.moveY(delta.top, { force: true });
+	};
+
+
+	/**
+	 * Call animations as if you were running on plain jquery.
+	 * We'll just adjust the model to sync itself with the new positions.
+	 *
+	 * @method animate
+	 * @param properties {Object}
+	 * @param options {Object}
+	 */
+	module.exports = function animate(properties, options) {
+
+		// [1] check allowed deltas
+		var top = parseFloat(properties.top),
+			left = parseFloat(properties.left);
+
+		// remainders
+		var remainders = {};
+
+		if (!isNaN(top)) {
+			var currTop = parseFloat(this.get('top')),
+				attemptedDelta = top - currTop,
+				delta = this.yAllowedDelta(attemptedDelta);
+
+			properties.top = currTop + delta;
+
+			remainders.top = attemptedDelta - delta;
+		}
+
+		if (!isNaN(left)) {
+			var currLeft = parseFloat(this.get('left')),
+				attemptedDelta = left - currLeft,
+				delta = this.xAllowedDelta(attemptedDelta);
+
+			properties.left = currLeft + delta;
+
+			remainders.left = attemptedDelta - delta;
+		}
+
+
+		// [2] set up options
+		options = options || {};
+
+		// jquery animate has two interfaces.. we should support them both.
+		options = _.isObject(options) ? options : {
+			duration: arguments[1],
+			easing: arguments[2],
+			complete: arguments[3]
+		};
+
+		// on progress, update position:
+		if (options.progress) {
+
+			// progress func already defined.
+
+			var originalProgressFunc = options.progress;
+
+			options.progress = _.bind(function () {
+
+				// first call the original progress function
+				originalProgressFunc.apply(this.$el, arguments);
+
+
+				// 'this' refers to the draggable object
+
+				var currPos = this.$el.position(),
+					delta = {
+						top: currPos.top - lastPos.top,
+						left: currPos.left - lastPos.left
+					};
+
+				update.call(this, delta);
+
+				// change lastPos
+				lastPos = currPos;
+
+			}, this);
+
+		} else {
+
+
+				// create a var to store the last position
+			var lastPos = this.$el.position();
+
+			options.progress = _.bind(function (animation, progress, remainingMs) {
+				// 'this' refers to the draggable object
+
+				var currPos = this.$el.position(),
+					delta = {
+						top: currPos.top - lastPos.top,
+						left: currPos.left - lastPos.left
+					};
+
+				update.call(this, delta);
+
+				// change lastPos
+				lastPos = currPos;
+
+			}, this);
+		}
+
+		// get reference to draggable object
+		var draggable = this;
+
+		// run animation
+		this.$el.animate(properties, options);
+
+		return this;
+	};
+});
+
 define('__backbone-ui-draggable/value-position',['require','exports','module','./helpers'],function (require, exports, module) {
 	
 
@@ -128,8 +249,8 @@ define('__backbone-ui-draggable/value-position',['require','exports','module','.
 			var pos = this.toPosition(model.get(valueAttribute));
 
 			model.set({
-				top: parseInt(pos.top, 10),
-				left: parseInt(pos.left, 10)
+				top: parseFloat(pos.top),
+				left: parseFloat(pos.left)
 			});
 
 		}, this);
@@ -139,8 +260,8 @@ define('__backbone-ui-draggable/value-position',['require','exports','module','.
 			var pos = this.toPosition(model.get(valueAttribute));
 
 			model.set({
-				top: parseInt(pos.top, 10),
-				left: parseInt(pos.left, 10)
+				top: parseFloat(pos.top),
+				left: parseFloat(pos.left)
 			});
 		} else {
 			model.set(valueAttribute, this.toValue(model));
@@ -188,10 +309,12 @@ define('__backbone-ui-draggable/value-position',['require','exports','module','.
 	exports.toPosition = function toPosition(value) {
 		var values = value.split('x');
 
-		return {
-			top: values[0].replace(/[^0-9\-]/g, ''),
-			left: values[1].replace(/[^0-9\-]/g, ''),
+		var pos =  {
+			top: parseFloat(values[0].replace(/[^0-9.\-]/g, '')),
+			left: parseFloat(values[1].replace(/[^0-9.\-]/g, '')),
 		};
+
+		return pos;
 	};
 });
 
@@ -201,6 +324,33 @@ define('__backbone-ui-draggable/movement',['require','exports','module','lodash'
 	var _ = require('lodash');
 
 	var h = require('./helpers');
+
+	exports.xAllowedDelta = function xAllowedDelta(attemptedDelta) {
+
+		var model = this.model,
+			previousLeft = parseFloat(model.get('left')),
+
+			// convert the attemptedDelta into attemptedLeft
+			attemptedLeft = previousLeft + attemptedDelta;
+
+		var width = parseFloat(this.$el.width());
+
+		// minimums
+		var minLeft = parseFloat(model.get('minLeft')),
+			minRight = parseFloat(model.get('minRight')),
+			min = h.max(minLeft, minRight - width);
+
+		// maximums
+		var maxLeft = parseFloat(model.get('maxLeft')),
+			maxRight = parseFloat(model.get('maxRight')),
+			max = h.min(maxLeft, maxRight - width);
+
+			// get the allowed left
+		var left = h.fitValueWithin(attemptedLeft, min, max);
+
+			// return the allowed delta
+		return left - previousLeft;
+	};
 
 	exports.moveX = function moveX(attemptedDelta, options) {
 
@@ -212,32 +362,17 @@ define('__backbone-ui-draggable/movement',['require','exports','module','lodash'
 				return attemptedDelta;
 			}
 
-			var model = this.model,
-				previousLeft = parseInt(model.get('left'), 10),
+			var model = this.model;
 
-				// convert the attemptedDelta into attemptedLeft
-				attemptedLeft = previousLeft + attemptedDelta;
 
-			var width = parseInt(this.$el.width(), 10);
+			// get true delta
+			var delta = options.force ? attemptedDelta : this.xAllowedDelta(attemptedDelta);
 
-			// minimums
-			var minLeft = parseInt(model.get('minLeft'), 10),
-				minRight = parseInt(model.get('minRight'), 10),
-				min = h.max(minLeft, minRight - width);
+			// set left
+			model.set('left', parseFloat(model.get('left')) + delta);
 
-			// maximums
-			var maxLeft = parseInt(model.get('maxLeft'), 10),
-				maxRight = parseInt(model.get('maxRight'), 10),
-				max = h.min(maxLeft, maxRight - width);
-
-				// get the allowed left
-			var left = h.fitValueWithin(attemptedLeft, min, max);
-
-			model.set('left', parseInt(left), 10);
+			// set value attribute
 			model.set(this.valueAttribute, this.toValue(model));
-
-
-			var delta = model.get('left') - previousLeft;
 
 			// events
 			if (!options.silent && delta !== 0) {
@@ -262,6 +397,35 @@ define('__backbone-ui-draggable/movement',['require','exports','module','lodash'
 		}
 	};
 
+
+	exports.yAllowedDelta = function yAllowedDelta(attemptedDelta) {
+
+		var model = this.model,
+			previousTop = parseFloat(model.get('top')),
+
+			// convert the attemptedDelta into attemptedTop
+			attemptedTop = previousTop + attemptedDelta;
+
+		var height = parseFloat(this.$el.height());
+
+		// minimums
+		var minTop = parseFloat(model.get('minTop')),
+			minBottom = parseFloat(model.get('minBottom')),
+			min = h.max(minTop, minBottom - height);
+
+		// maximums
+		var maxTop = parseFloat(model.get('maxTop')),
+			maxBottom = parseFloat(model.get('maxBottom')),
+			max = h.min(maxTop, maxBottom - height);
+
+			// get the allowed top
+		var top = h.fitValueWithin(attemptedTop, min, max);
+
+		// return allowed delta
+		return top - previousTop;
+	};
+
+
 	exports.moveY = function moveY(attemptedDelta, options) {
 
 		if (attemptedDelta) {
@@ -272,31 +436,16 @@ define('__backbone-ui-draggable/movement',['require','exports','module','lodash'
 				return attemptedDelta;
 			}
 
-			var model = this.model,
-				previousTop = parseInt(model.get('top'), 10),
+			var model = this.model;
 
-				// convert the attemptedDelta into attemptedTop
-				attemptedTop = previousTop + attemptedDelta;
+			// get allowed delta
+			var delta = this.yAllowedDelta(attemptedDelta);
 
-			var height = parseInt(this.$el.height(), 10);
+			// set new top
+			model.set('top', parseFloat(model.get('top')) + delta);
 
-			// minimums
-			var minTop = parseInt(model.get('minTop'), 10),
-				minBottom = parseInt(model.get('minBottom'), 10),
-				min = h.max(minTop, minBottom - height);
-
-			// maximums
-			var maxTop = parseInt(model.get('maxTop'), 10),
-				maxBottom = parseInt(model.get('maxBottom'), 10),
-				max = h.min(maxTop, maxBottom - height);
-
-				// get the allowed top
-			var top = h.fitValueWithin(attemptedTop, min, max);
-
-			model.set('top', parseInt(top));
+			// update value
 			model.set(this.valueAttribute, this.toValue(model));
-
-			var delta = model.get('top') - previousTop;
 
 			// events
 			if (!options.silent && delta !== 0) {
@@ -433,7 +582,7 @@ define('__backbone-ui-draggable/event-handlers',['require','exports','module'],f
  * @module BackboneUiDraggable
  */
 
-define('backbone-ui-draggable',['require','exports','module','lowercase-backbone','model-dock','lodash','jquery','./__backbone-ui-draggable/helpers','./__backbone-ui-draggable/when','./__backbone-ui-draggable/value-position','./__backbone-ui-draggable/movement','./__backbone-ui-draggable/event-handlers'],function (require, exports, module) {
+define('backbone-ui-draggable',['require','exports','module','lowercase-backbone','model-dock','lodash','jquery','./__backbone-ui-draggable/helpers','./__backbone-ui-draggable/when','./__backbone-ui-draggable/animate','./__backbone-ui-draggable/value-position','./__backbone-ui-draggable/movement','./__backbone-ui-draggable/event-handlers'],function (require, exports, module) {
 	
 
 	var backbone = require('lowercase-backbone'),
@@ -469,8 +618,8 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 			var data = $.extend({
 				status: 'stopped',
 				disabled: false,
-				top: parseInt(pos.top, 10),
-				left: parseInt(pos.left, 10)
+				top: parseFloat(pos.top),
+				left: parseFloat(pos.left)
 
 			}, options);
 
@@ -500,11 +649,14 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 			this.initializeDraggableValuePosition(options);
 		},
 
-		when: require('./__backbone-ui-draggable/when'),
-
 		events: {
 			mousedown: 'mousedown',
 		},
+
+
+		when: require('./__backbone-ui-draggable/when'),
+
+		animate: require('./__backbone-ui-draggable/animate'),
 
 		/**
 		 * Set the disabled option to true.

@@ -33,7 +33,7 @@ function (draggable            ,  $      ,  Backbone ,  modelDock  , undefined  
 		var top = draggable.model.get('top'),
 			inverse = 255 - top;
 
-		draggable.$el.css('background-color', 'rgb(255,' + top + ',' + inverse + ')');
+		draggable.$el.css('background-color', 'rgb(255,' + parseInt(top, 10) + ',' + parseInt(inverse, 10) + ')');
 
 	})
 
@@ -58,6 +58,17 @@ function (draggable            ,  $      ,  Backbone ,  modelDock  , undefined  
 		}
 
 	});
+
+	// animation control
+	var animationControl = $('#animate').click(function () {
+		var top = $('#animation-top').val(),
+			left = $('#animation-left').val();
+
+		d.animate({
+			top: top,
+			left: left
+		}, 400);
+	})
 
 
 

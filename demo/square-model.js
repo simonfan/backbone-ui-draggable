@@ -1,6 +1,9 @@
 define(['backbone', 'module'], function (Backbone , module ) {
 
 	module.exports = new Backbone.Model({
+		top: 50,
+		left: 230,
+
 		minLeft: 20,
 		maxLeft: 500,
 
@@ -10,8 +13,8 @@ define(['backbone', 'module'], function (Backbone , module ) {
 		minTop: 30,
 		maxTop: 500,
 
-		minBottom: 300,
-		maxBottom: 560,
+		minBottom: 200,
+		maxBottom: 400,
 	});
 
 });

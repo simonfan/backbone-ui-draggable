@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/index.js - backbone-ui-draggable</title>
+    <title>src/__backbone-ui-draggable/animate.js - backbone-ui-draggable</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -86,131 +86,129 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: src/index.js</h1>
+                        <h1 class="file-heading">File: src/__backbone-ui-draggable/animate.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-//     BackboneUiDraggable
-//     (c) simonfan
-//     BackboneUiDraggable is licensed under the MIT terms.
-
-/**
- * AMD module.
- *
- * @module BackboneUiDraggable
- */
-
 define(function (require, exports, module) {
 	&#x27;use strict&#x27;;
 
-	var backbone = require(&#x27;lowercase-backbone&#x27;),
-		modelDock = require(&#x27;model-dock&#x27;),
-		_ = require(&#x27;lodash&#x27;),
-		$ = require(&#x27;jquery&#x27;);
+	var _ = require(&#x27;lodash&#x27;);
 
-	var helpers = require(&#x27;./__backbone-ui-draggable/helpers&#x27;);
+	function update(delta) {
 
-	var draggable = module.exports = modelDock.extend({
-		initialize: function initialize(options) {
-
-			backbone.view.prototype.initialize.call(this, options);
-
-			this.initializeModelDock(options);
-
-			this.initializeUIDraggable(options);
-		},
-
-		initializeUIDraggable: function initializeUIDraggable(options) {
-
-			// bind methods
-			_.bindAll(this, &#x27;mousedown&#x27;, &#x27;mousemove&#x27;, &#x27;mouseup&#x27;);
-
-			// window
-			this.$window = $(window);
-
-			// canvas
-			this.$canvas = options.canvas || this.canvas || this.$el.parent();
-
-			var pos = this.$el.position();
-
-			var data = $.extend({
-				status: &#x27;stopped&#x27;,
-				disabled: false,
-				top: parseFloat(pos.top),
-				left: parseFloat(pos.left)
-
-			}, options);
-
-			// set initial data
-			var model = this.model;
-			model.set(data);
-
-			// listen to enable and disable option changes
-			this.listenTo(model, &#x27;change:disabled&#x27;, function (model) {
-
-				if (model.get(&#x27;disabled&#x27;)) {
-					// is disabled
-					this.$el
-						.removeClass(&#x27;enabled&#x27;)
-						.addClass(&#x27;disabled&#x27;);
-				} else {
-					// is enabled
-					this.$el
-						.removeClass(&#x27;disabled&#x27;)
-						.addClass(&#x27;enabled&#x27;);
-				}
-
-			});
+		this.moveX(delta.left, { force: true });
+		this.moveY(delta.top, { force: true });
+	};
 
 
-			// initialize value-position system.
-			this.initializeDraggableValuePosition(options);
-		},
+	/**
+	 * Call animations as if you were running on plain jquery.
+	 * We&#x27;ll just adjust the model to sync itself with the new positions.
+	 *
+	 * @method animate
+	 * @param properties {Object}
+	 * @param options {Object}
+	 */
+	module.exports = function animate(properties, options) {
 
-		events: {
-			mousedown: &#x27;mousedown&#x27;,
-		},
+		// [1] check allowed deltas
+		var top = parseFloat(properties.top),
+			left = parseFloat(properties.left);
 
+		// remainders
+		var remainders = {};
 
-		when: require(&#x27;./__backbone-ui-draggable/when&#x27;),
+		if (!isNaN(top)) {
+			var currTop = parseFloat(this.get(&#x27;top&#x27;)),
+				attemptedDelta = top - currTop,
+				delta = this.yAllowedDelta(attemptedDelta);
 
-		animate: require(&#x27;./__backbone-ui-draggable/animate&#x27;),
+			properties.top = currTop + delta;
 
-		/**
-		 * Set the disabled option to true.
-		 *
-		 * @method disable
-		 */
-		disable: function disable() {
-			this.model.set(&#x27;disabled&#x27;, true);
-		},
-
-		/**
-		 * Set the disabled option to false.
-		 *
-		 * @method enable
-		 */
-		enable: function enable() {
-			this.model.set(&#x27;disabled&#x27;, false);
-		},
-
-		axis: &#x27;xy&#x27;,
-
-		map: {
-			left: &#x27;-&gt;css:left&#x27;,
-			top: &#x27;-&gt;css:top&#x27;,
-		},
-
-		stringifiers: {
-			left: helpers.stringifyPositionalValue,
-			top: helpers.stringifyPositionalValue,
+			remainders.top = attemptedDelta - delta;
 		}
-	});
 
-	// extend
-	draggable.proto(require(&#x27;./__backbone-ui-draggable/value-position&#x27;));
-	draggable.proto(require(&#x27;./__backbone-ui-draggable/movement&#x27;));
-	draggable.proto(require(&#x27;./__backbone-ui-draggable/event-handlers&#x27;));
+		if (!isNaN(left)) {
+			var currLeft = parseFloat(this.get(&#x27;left&#x27;)),
+				attemptedDelta = left - currLeft,
+				delta = this.xAllowedDelta(attemptedDelta);
+
+			properties.left = currLeft + delta;
+
+			remainders.left = attemptedDelta - delta;
+		}
+
+
+		// [2] set up options
+		options = options || {};
+
+		// jquery animate has two interfaces.. we should support them both.
+		options = _.isObject(options) ? options : {
+			duration: arguments[1],
+			easing: arguments[2],
+			complete: arguments[3]
+		};
+
+		// on progress, update position:
+		if (options.progress) {
+
+			// progress func already defined.
+
+			var originalProgressFunc = options.progress;
+
+			options.progress = _.bind(function () {
+
+				// first call the original progress function
+				originalProgressFunc.apply(this.$el, arguments);
+
+
+				// &#x27;this&#x27; refers to the draggable object
+
+				var currPos = this.$el.position(),
+					delta = {
+						top: currPos.top - lastPos.top,
+						left: currPos.left - lastPos.left
+					};
+
+				update.call(this, delta);
+
+				// change lastPos
+				lastPos = currPos;
+
+			}, this);
+
+		} else {
+
+
+				// create a var to store the last position
+			var lastPos = this.$el.position();
+
+			options.progress = _.bind(function (animation, progress, remainingMs) {
+				// &#x27;this&#x27; refers to the draggable object
+
+				var currPos = this.$el.position(),
+					delta = {
+						top: currPos.top - lastPos.top,
+						left: currPos.left - lastPos.left
+					};
+
+				update.call(this, delta);
+
+				// change lastPos
+				lastPos = currPos;
+
+			}, this);
+		}
+
+		// get reference to draggable object
+		var draggable = this;
+
+		// run animation
+		this.$el.animate(properties, options);
+
+		return this;
+	};
 });
 
     </pre>

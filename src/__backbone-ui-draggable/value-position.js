@@ -22,8 +22,8 @@ define(function (require, exports, module) {
 			var pos = this.toPosition(model.get(valueAttribute));
 
 			model.set({
-				top: parseInt(pos.top, 10),
-				left: parseInt(pos.left, 10)
+				top: parseFloat(pos.top),
+				left: parseFloat(pos.left)
 			});
 
 		}, this);
@@ -33,8 +33,8 @@ define(function (require, exports, module) {
 			var pos = this.toPosition(model.get(valueAttribute));
 
 			model.set({
-				top: parseInt(pos.top, 10),
-				left: parseInt(pos.left, 10)
+				top: parseFloat(pos.top),
+				left: parseFloat(pos.left)
 			});
 		} else {
 			model.set(valueAttribute, this.toValue(model));
@@ -82,9 +82,11 @@ define(function (require, exports, module) {
 	exports.toPosition = function toPosition(value) {
 		var values = value.split('x');
 
-		return {
-			top: values[0].replace(/[^0-9\-]/g, ''),
-			left: values[1].replace(/[^0-9\-]/g, ''),
+		var pos =  {
+			top: parseFloat(values[0].replace(/[^0-9.\-]/g, '')),
+			left: parseFloat(values[1].replace(/[^0-9.\-]/g, '')),
 		};
+
+		return pos;
 	};
 });

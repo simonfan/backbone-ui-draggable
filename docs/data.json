@@ -4,6 +4,13 @@
         "version": "0.0.0"
     },
     "files": {
+        "src/__backbone-ui-draggable/animate.js": {
+            "name": "src/__backbone-ui-draggable/animate.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src/__backbone-ui-draggable/event-handlers.js": {
             "name": "src/__backbone-ui-draggable/event-handlers.js",
             "modules": {
@@ -80,6 +87,26 @@
     },
     "classes": {},
     "classitems": [
+        {
+            "file": "src/__backbone-ui-draggable/animate.js",
+            "line": 13,
+            "description": "Call animations as if you were running on plain jquery.\nWe'll just adjust the model to sync itself with the new positions.",
+            "itemtype": "method",
+            "name": "animate",
+            "params": [
+                {
+                    "name": "properties",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": ""
+        },
         {
             "file": "src/__backbone-ui-draggable/helpers.js",
             "line": 40,
@@ -192,7 +219,7 @@
         },
         {
             "file": "src/index.js",
-            "line": 84,
+            "line": 87,
             "description": "Set the disabled option to true.",
             "itemtype": "method",
             "name": "disable",
@@ -201,7 +228,7 @@
         },
         {
             "file": "src/index.js",
-            "line": 93,
+            "line": 96,
             "description": "Set the disabled option to false.",
             "itemtype": "method",
             "name": "enable",
