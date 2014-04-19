@@ -1,6 +1,6 @@
-define(['backbone-ui-draggable', 'jquery', 'backbone', 'model-dock', 'jquery-ui'],
+define(['backbone-ui-draggable', 'jquery', 'backbone', 'model-dock', 'jquery-ui', './square-model.js', './limits.js'],
 
-function (draggable            ,  $      ,  Backbone ,  modelDock  , undefined  ) {
+function (draggable            ,  $      ,  Backbone ,  modelDock  , undefined  ,  squareModel    ,  limits   ) {
 
 
 	// the draggable objet
@@ -14,14 +14,7 @@ function (draggable            ,  $      ,  Backbone ,  modelDock  , undefined  
 			value: '[data-attribute="value"]',
 		},
 
-		model: new Backbone.Model({
-			minLeft: 20,
-			maxRight: 1000,
-
-			minTop: -40,
-			maxTop: 0,
-			maxBottom: 300
-		})
+		model: squareModel
 	});
 
 

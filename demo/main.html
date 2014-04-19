@@ -11,12 +11,12 @@
 	<style type="text/css">
 		#canvas {
 			position: relative;
-			margin-top: 200px;
-			margin-left: 150px;
 
 			background-color: yellow;
 
 			height: 400px;
+
+			margin-left: 100px;
 		}
 
 		#draggable {
@@ -25,14 +25,79 @@
 
 			top: 50px;
 			left: 40px;
+
+			width: 300px;
+			height: 200px;
 		}
 
 		#jq-draggable {
 			background-color: green;
 			color: #fff;
 			position: absolute;
-			top: 100px;
+			top: -100px;
+
 		}
+
+
+		/* limits */
+
+		.limit {
+			background-color: rgba(0, 0, 0, 0.1);
+
+			padding: 10px 10px 10px 10px;
+
+			position: absolute;
+		}
+
+		.horizontal {
+			width: 400px;
+			height: 30px;
+		}
+
+		.vertical {
+			width: 100px;
+			height: 200px;
+		}
+
+		#minTop {
+			border-bottom: 3px dashed black;
+		}
+
+		#maxTop {
+			border-top: 3px dashed black;
+		}
+
+		#minBottom {
+			border-bottom: 3px dashed black;
+		}
+
+		#maxBottom {
+			border-top: 3px dashed black;
+		}
+
+		#minLeft {
+			border-right: 3px dashed black;
+		}
+
+		#maxLeft {
+			border-left: 3px dashed black;
+
+			padding-top: 100px;
+		}
+
+		#minRight {
+			border-right: 3px dashed black;
+
+			padding-top: 200px;
+		}
+
+		#maxRight {
+			border-left: 3px dashed black;
+
+			padding-top: 300px;
+		}
+
+
 	</style>
 
 
@@ -70,12 +135,49 @@
 
 	<div id="canvas">
 		<h1>Canvas</h1>
+
+		<!-- top -->
+		<div id="minTop" class="limit horizontal">
+			minTop: <input data-attribute="minTop">
+		</div>
+		<div id="maxTop" class="limit horizontal">
+			maxTop: <input data-attribute="maxTop">
+		</div>
+
+		<!-- bottom -->
+		<div id="minBottom" class="limit horizontal">
+			minBottom: <input data-attribute="minBottom">
+		</div>
+		<div id="maxBottom" class="limit horizontal">
+			maxBottom: <input data-attribute="maxBottom">
+		</div>
+
+		<!-- left -->
+		<div id="minLeft" class="limit vertical">
+			minLeft: <input data-attribute="minLeft">
+		</div>
+		<div id="maxLeft" class="limit vertical">
+			maxLeft: <input data-attribute="maxLeft">
+		</div>
+
+
+		<!-- right -->
+		<div id="minRight" class="limit vertical">
+			minRight: <input data-attribute="minRight">
+		</div>
+		<div id="maxRight" class="limit vertical">
+			maxRight: <input data-attribute="maxRight">
+		</div>
+
 		<div id="draggable">
 			top: <input data-attribute="top" type="input">
 			left: <input data-attribute="left" type="input">
 			status: <input data-attribute="status" type="input">
 			value: <input data-attribute="value" type="input">
 		</div>
+
+
+
 		<div id="jq-draggable">
 			JQUERY-UI<br>
 			DRAGGABLE
