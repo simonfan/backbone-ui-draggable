@@ -21,22 +21,22 @@ define(function (require, exports, module) {
 				// convert the attemptedDelta into attemptedLeft
 				attemptedLeft = previousLeft + attemptedDelta;
 
-			var width = h.numberify(this.$el.width());
+			var width = parseInt(this.$el.width(), 10);
 
 			// minimums
-			var minLeft = h.numberify(model.get('minLeft')),
-				minRight = h.numberify(model.get('minRight')),
+			var minLeft = parseInt(model.get('minLeft'), 10),
+				minRight = parseInt(model.get('minRight'), 10),
 				min = h.max(minLeft, minRight - width);
 
 			// maximums
-			var maxLeft = h.numberify(model.get('maxLeft')),
-				maxRight = h.numberify(model.get('maxRight')),
+			var maxLeft = parseInt(model.get('maxLeft'), 10),
+				maxRight = parseInt(model.get('maxRight'), 10),
 				max = h.min(maxLeft, maxRight - width);
 
 				// get the allowed left
 			var left = h.fitValueWithin(attemptedLeft, min, max);
 
-			model.set('left', h.numberify(left));
+			model.set('left', parseInt(left), 10);
 			model.set(this.valueAttribute, this.toValue(model));
 
 
@@ -81,22 +81,22 @@ define(function (require, exports, module) {
 				// convert the attemptedDelta into attemptedTop
 				attemptedTop = previousTop + attemptedDelta;
 
-			var height = h.numberify(this.$el.height());
+			var height = parseInt(this.$el.height(), 10);
 
 			// minimums
-			var minTop = h.numberify(model.get('minTop')),
-				minBottom = h.numberify(model.get('minBottom')),
+			var minTop = parseInt(model.get('minTop'), 10),
+				minBottom = parseInt(model.get('minBottom'), 10),
 				min = h.max(minTop, minBottom - height);
 
 			// maximums
-			var maxTop = h.numberify(model.get('maxTop')),
-				maxBottom = h.numberify(model.get('maxBottom')),
+			var maxTop = parseInt(model.get('maxTop'), 10),
+				maxBottom = parseInt(model.get('maxBottom'), 10),
 				max = h.min(maxTop, maxBottom - height);
 
 				// get the allowed top
 			var top = h.fitValueWithin(attemptedTop, min, max);
 
-			model.set('top', h.numberify(top));
+			model.set('top', parseInt(top));
 			model.set(this.valueAttribute, this.toValue(model));
 
 			var delta = model.get('top') - previousTop;

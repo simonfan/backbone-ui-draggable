@@ -45,7 +45,11 @@
 
             <ul id="api-modules" class="apis modules">
             
+                <li><a href="../modules/backbone-ui-draggable.html">backbone-ui-draggable</a></li>
+            
                 <li><a href="../modules/BackboneUiDraggable.html">BackboneUiDraggable</a></li>
+            
+                <li><a href="../modules/event-handlers.html">event-handlers</a></li>
             
             </ul>
         </div>
@@ -103,23 +107,8 @@ define(function (require, exports, module) {
 		modelDock = require(&#x27;model-dock&#x27;),
 		_ = require(&#x27;lodash&#x27;),
 		$ = require(&#x27;jquery&#x27;);
-	/**
-	 * Just adds &#x27;px&#x27; string to numerical values.
-	 *
-	 * @method stringifyPositionalValue
-	 * @private
-	 */
-	var isNumber = /^[0-9\-]+$/;
-	function stringifyPositionalValue(v) {
-		// [1] check if it is a isNumber
-		return isNumber.test(v) ? v + &#x27;px&#x27; : v;
-	}
 
-	function numberify(v) {
-		return parseInt(v);
-	}
-
-
+	var helpers = require(&#x27;./__backbone-ui-draggable/helpers&#x27;);
 
 	var draggable = module.exports = modelDock.extend({
 		initialize: function initialize(options) {
@@ -146,155 +135,61 @@ define(function (require, exports, module) {
 
 			var data = $.extend({
 				status: &#x27;stopped&#x27;,
-
-		//		minX: 0,
-		//		maxX: numberify(this.$canvas.width()) - numberify(this.$el.width()),
-
-		//		minY: 0,
-		//		maxY: numberify(this.$canvas.height()) - numberify(this.$el.height()),
-
-				top: numberify(pos.top),
-				left: numberify(pos.left)
+				disabled: false,
+				top: parseInt(pos.top, 10),
+				left: parseInt(pos.left, 10)
 
 			}, options);
 
-			// set initial position
-
+			// set initial data
 			var model = this.model;
-
 			model.set(data);
 
-			// listen to changes on value attribute
-			var valueAttribute = this.valueAttribute;
-			this.listenTo(model, &#x27;change:&#x27; + valueAttribute, function (model, value) {
+			// listen to enable and disable option changes
+			this.listenTo(model, &#x27;change:disabled&#x27;, function (model) {
 
-				var pos = this.toPosition(model.get(valueAttribute));
+				if (model.get(&#x27;disabled&#x27;)) {
+					// is disabled
+					this.$el
+						.removeClass(&#x27;enabled&#x27;)
+						.addClass(&#x27;disabled&#x27;);
+				} else {
+					// is enabled
+					this.$el
+						.removeClass(&#x27;disabled&#x27;)
+						.addClass(&#x27;enabled&#x27;);
+				}
 
-				model.set({
-					top: numberify(pos.top),
-					left: numberify(pos.left)
-				});
+			});
 
-			}, this);
 
-			// initialize value/position
-			if (model.get(valueAttribute)) {
-				var pos = this.toPosition(model.get(valueAttribute));
-
-				model.set({
-					top: numberify(pos.top),
-					left: numberify(pos.left)
-				});
-			} else {
-				model.set(valueAttribute, this.toValue(model));
-			}
-
+			// initialize value-position system.
+			this.initializeDraggableValuePosition(options);
 		},
 
 		events: {
 			mousedown: &#x27;mousedown&#x27;,
 		},
 
-		mousedown: function mousedown(e) {
-
-			if (this.$el.is(e.target) &amp;&amp; e.which === 1) {
-
-				this.model.set(&#x27;status&#x27;, &#x27;dragging&#x27;);
-
-				this.lastPosition = {
-					x: e.pageX,
-					y: e.pageY
-				};
-
-
-				var offset = this.$el.offset();
-
-				this.handlePosition = {
-					x: e.pageX - offset.left,
-					y: e.pageY - offset.top
-				};
-
-				this.$window
-					.on(&#x27;mousemove&#x27;, this.mousemove)
-					.on(&#x27;mouseup&#x27;, this.mouseup);
-
-				this.trigger(&#x27;movestart&#x27;, this);
-
-				// preventDefault AND stopPropagation
-				// http://stackoverflow.com/questions/1357118/event-preventdefault-vs-return-false
-				return false;
-
-			}
+		/**
+		 * Set the disabled option to true.
+		 *
+		 * @method disable
+		 */
+		disable: function disable() {
+			this.model.set(&#x27;disabled&#x27;, true);
 		},
 
-		mousemove: function mousemove(e) {
-
-			var last = this.lastPosition,
-				x = e.pageX,
-				y = e.pageY,
-				dx = x - last.x,
-				dy = y - last.y;
-
-
-			var offset = this.$el.offset(),
-				handleX = this.handlePosition.x + offset.left,
-				handleY = this.handlePosition.y + offset.top;
-
-
-			if ((dx &gt; 0 &amp;&amp; x &gt; handleX ) || (dx &lt; 0 &amp;&amp; x &lt; handleX)) {
-				this.moveX(dx, {
-					agent: &#x27;mousemove&#x27;
-				});
-			}
-
-			if ((dy &gt; 0 &amp;&amp; y &gt; handleY) || (dy &lt; 0 &amp;&amp; y &lt; handleY)) {
-				this.moveY(dy, {
-					agent: &#x27;mousemove&#x27;
-				});
-			}
-
-			last.x = x;
-			last.y = y;
-
-			// preventDefault AND stopPropagation
-			return false;
-		},
-
-		mouseup: function mouseup() {
-			this.$window.off(&#x27;mousemove&#x27;, this.mousemove);
-
-			delete this.lastPosition;
-
-			this.model.set(&#x27;status&#x27;, &#x27;stopped&#x27;);
-
-
-			this.trigger(&#x27;movestop&#x27;, this);
-
-			// preventDefault AND stopPropagation
-			//return false;
+		/**
+		 * Set the disabled option to false.
+		 *
+		 * @method enable
+		 */
+		enable: function enable() {
+			this.model.set(&#x27;disabled&#x27;, false);
 		},
 
 		axis: &#x27;xy&#x27;,
-
-		valueAttribute: &#x27;value&#x27;,
-
-		setValue: function setValue(value) {
-			this.model.set(this.valueAttribute, value);
-			return this;
-		},
-
-		toValue: function toValue(model) {
-			return &#x27;At &#x27; + model.get(&#x27;top&#x27;) + &#x27; x &#x27; + model.get(&#x27;left&#x27;);
-		},
-
-		toPosition: function toPosition(value) {
-			var values = value.split(&#x27;x&#x27;);
-
-			return {
-				top: values[0].replace(/[^0-9\-]/g, &#x27;&#x27;),
-				left: values[1].replace(/[^0-9\-]/g, &#x27;&#x27;),
-			};
-		},
 
 		map: {
 			left: &#x27;-&gt;css:left&#x27;,
@@ -302,13 +197,15 @@ define(function (require, exports, module) {
 		},
 
 		stringifiers: {
-			left: stringifyPositionalValue,
-			top: stringifyPositionalValue
+			left: helpers.stringifyPositionalValue,
+			top: helpers.stringifyPositionalValue,
 		}
 	});
 
 	// extend
-	draggable.proto(require(&#x27;./__backbone-ui-draggable/move&#x27;));
+	draggable.proto(require(&#x27;./__backbone-ui-draggable/value-position&#x27;));
+	draggable.proto(require(&#x27;./__backbone-ui-draggable/movement&#x27;));
+	draggable.proto(require(&#x27;./__backbone-ui-draggable/event-handlers&#x27;));
 });
 
     </pre>

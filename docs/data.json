@@ -4,6 +4,29 @@
         "version": "0.0.0"
     },
     "files": {
+        "src/__backbone-ui-draggable/event-handlers.js": {
+            "name": "src/__backbone-ui-draggable/event-handlers.js",
+            "modules": {
+                "event-handlers": 1
+            },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/__backbone-ui-draggable/helpers.js": {
+            "name": "src/__backbone-ui-draggable/helpers.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/__backbone-ui-draggable/value-position.js": {
+            "name": "src/__backbone-ui-draggable/value-position.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src/index.js": {
             "name": "src/index.js",
             "modules": {
@@ -15,6 +38,27 @@
         }
     },
     "modules": {
+        "backbone-ui-draggable": {
+            "name": "backbone-ui-draggable",
+            "submodules": {
+                "event-handlers": 1
+            },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "event-handlers": {
+            "name": "event-handlers",
+            "submodules": {},
+            "classes": {},
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "backbone-ui-draggable",
+            "namespace": "",
+            "file": "src/__backbone-ui-draggable/event-handlers.js",
+            "line": 1
+        },
         "BackboneUiDraggable": {
             "name": "BackboneUiDraggable",
             "submodules": {},
@@ -30,13 +74,103 @@
     "classes": {},
     "classitems": [
         {
-            "file": "src/index.js",
-            "line": 18,
+            "file": "src/__backbone-ui-draggable/helpers.js",
+            "line": 40,
             "description": "Just adds 'px' string to numerical values.",
             "itemtype": "method",
             "name": "stringifyPositionalValue",
             "access": "private",
             "tagname": "",
+            "class": "",
+            "module": "backbone-ui-draggable"
+        },
+        {
+            "file": "src/__backbone-ui-draggable/value-position.js",
+            "line": 6,
+            "description": "Runs the initialization logic that is needed for the value-position\nsystem.",
+            "itemtype": "method",
+            "name": "initializeDraggableValuePosition",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "",
+            "module": "backbone-ui-draggable"
+        },
+        {
+            "file": "src/__backbone-ui-draggable/value-position.js",
+            "line": 45,
+            "description": "The name of the attribute to be set as 'value'",
+            "itemtype": "property",
+            "name": "valueAttribute",
+            "type": "String",
+            "class": "",
+            "module": "backbone-ui-draggable"
+        },
+        {
+            "file": "src/__backbone-ui-draggable/value-position.js",
+            "line": 53,
+            "description": "Sets the 'valueAttribute' attribute on the model.",
+            "itemtype": "method",
+            "name": "setValue",
+            "params": [
+                {
+                    "name": "value",
+                    "description": "*"
+                }
+            ],
+            "class": "",
+            "module": "backbone-ui-draggable"
+        },
+        {
+            "file": "src/__backbone-ui-draggable/value-position.js",
+            "line": 64,
+            "description": "Takes the backbone model of the draggalbe item\nand is expected to return a 'value'.",
+            "itemtype": "method",
+            "name": "toValue",
+            "params": [
+                {
+                    "name": "model",
+                    "description": "",
+                    "type": "BB Model"
+                }
+            ],
+            "class": "",
+            "module": "backbone-ui-draggable"
+        },
+        {
+            "file": "src/__backbone-ui-draggable/value-position.js",
+            "line": 75,
+            "description": "Takes a value and is expected to return a position\nobject containg { top: Number, left: Number }",
+            "itemtype": "method",
+            "name": "toPosition",
+            "params": [
+                {
+                    "name": "value",
+                    "description": ""
+                }
+            ],
+            "class": "",
+            "module": "backbone-ui-draggable"
+        },
+        {
+            "file": "src/index.js",
+            "line": 82,
+            "description": "Set the disabled option to true.",
+            "itemtype": "method",
+            "name": "disable",
+            "class": "",
+            "module": "BackboneUiDraggable"
+        },
+        {
+            "file": "src/index.js",
+            "line": 91,
+            "description": "Set the disabled option to false.",
+            "itemtype": "method",
+            "name": "enable",
             "class": "",
             "module": "BackboneUiDraggable"
         }

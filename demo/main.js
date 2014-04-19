@@ -26,6 +26,21 @@ function (draggable            ,  $      ,  Backbone ,  modelDock  , undefined  
 
 
 
+	// draggable enabling contrl
+	var control = $('#draggable-status').change(function (e) {
+
+		var status = $('#draggable-status').val();
+
+		if (status === 'enabled') {
+			d.enable();
+		} else {
+			d.disable();
+		}
+
+	});
+
+
+
 	// draggable event display
 
 

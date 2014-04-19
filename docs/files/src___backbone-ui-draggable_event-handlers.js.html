@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>BackboneUiDraggable - backbone-ui-draggable</title>
+    <title>src/__backbone-ui-draggable/event-handlers.js - backbone-ui-draggable</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -86,38 +86,98 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>BackboneUiDraggable Module</h1>
-<div class="box clearfix meta">
-    
+                        <h1 class="file-heading">File: src/__backbone-ui-draggable/event-handlers.js</h1>
 
-    
+<div class="file">
+    <pre class="code prettyprint linenums">
+/**
+ *
+ * @module backbone-ui-draggable
+ * @submodule event-handlers
+ */
 
-    
-        <div class="foundat">
-            Defined in: <a href="../files/src_index.js.html#l5"><code>src&#x2F;index.js:5</code></a>
-        </div>
-    
-
-    
-</div>
+define(function (require, exports, module) {
+	&#x27;use strict&#x27;;
 
 
+	exports.mousedown = function mousedown(e) {
 
-<div class="box intro">
-    <p>AMD module.</p>
+		if (this.$el.is(e.target) &amp;&amp; e.which === 1 &amp;&amp; !this.model.get(&#x27;disabled&#x27;)) {
 
-</div>
+			this.model.set(&#x27;status&#x27;, &#x27;dragging&#x27;);
+
+			this.lastPosition = {
+				x: e.pageX,
+				y: e.pageY
+			};
 
 
+			var offset = this.$el.offset();
 
-<div class="yui3-g">
-    <div class="yui3-u-1-2">
-        
-    </div>
+			this.handlePosition = {
+				x: e.pageX - offset.left,
+				y: e.pageY - offset.top
+			};
 
-    <div class="yui3-u-1-2">
-        
-    </div>
+			this.$window
+				.on(&#x27;mousemove&#x27;, this.mousemove)
+				.on(&#x27;mouseup&#x27;, this.mouseup);
+
+			this.trigger(&#x27;movestart&#x27;, this);
+
+			// preventDefault AND stopPropagation
+			// http://stackoverflow.com/questions/1357118/event-preventdefault-vs-return-false
+			return false;
+
+		}
+	};
+
+	exports.mousemove = function mousemove(e) {
+
+		var last = this.lastPosition,
+			x = e.pageX,
+			y = e.pageY,
+			dx = x - last.x,
+			dy = y - last.y;
+
+
+		var offset = this.$el.offset(),
+			handleX = this.handlePosition.x + offset.left,
+			handleY = this.handlePosition.y + offset.top;
+
+
+		if ((dx &gt; 0 &amp;&amp; x &gt; handleX ) || (dx &lt; 0 &amp;&amp; x &lt; handleX)) {
+			this.moveX(dx, {
+				agent: &#x27;mousemove&#x27;
+			});
+		}
+
+		if ((dy &gt; 0 &amp;&amp; y &gt; handleY) || (dy &lt; 0 &amp;&amp; y &lt; handleY)) {
+			this.moveY(dy, {
+				agent: &#x27;mousemove&#x27;
+			});
+		}
+
+		last.x = x;
+		last.y = y;
+
+		// preventDefault AND stopPropagation
+		return false;
+	};
+
+	exports.mouseup = function mouseup() {
+		this.$window.off(&#x27;mousemove&#x27;, this.mousemove);
+
+		delete this.lastPosition;
+
+		this.model.set(&#x27;status&#x27;, &#x27;stopped&#x27;);
+
+
+		this.trigger(&#x27;movestop&#x27;, this);
+	};
+});
+
+    </pre>
 </div>
 
                     </div>

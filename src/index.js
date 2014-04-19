@@ -15,23 +15,8 @@ define(function (require, exports, module) {
 		modelDock = require('model-dock'),
 		_ = require('lodash'),
 		$ = require('jquery');
-	/**
-	 * Just adds 'px' string to numerical values.
-	 *
-	 * @method stringifyPositionalValue
-	 * @private
-	 */
-	var isNumber = /^[0-9\-]+$/;
-	function stringifyPositionalValue(v) {
-		// [1] check if it is a isNumber
-		return isNumber.test(v) ? v + 'px' : v;
-	}
 
-	function numberify(v) {
-		return parseInt(v);
-	}
-
-
+	var helpers = require('./__backbone-ui-draggable/helpers');
 
 	var draggable = module.exports = modelDock.extend({
 		initialize: function initialize(options) {
@@ -58,155 +43,61 @@ define(function (require, exports, module) {
 
 			var data = $.extend({
 				status: 'stopped',
-
-		//		minX: 0,
-		//		maxX: numberify(this.$canvas.width()) - numberify(this.$el.width()),
-
-		//		minY: 0,
-		//		maxY: numberify(this.$canvas.height()) - numberify(this.$el.height()),
-
-				top: numberify(pos.top),
-				left: numberify(pos.left)
+				disabled: false,
+				top: parseInt(pos.top, 10),
+				left: parseInt(pos.left, 10)
 
 			}, options);
 
-			// set initial position
-
+			// set initial data
 			var model = this.model;
-
 			model.set(data);
 
-			// listen to changes on value attribute
-			var valueAttribute = this.valueAttribute;
-			this.listenTo(model, 'change:' + valueAttribute, function (model, value) {
+			// listen to enable and disable option changes
+			this.listenTo(model, 'change:disabled', function (model) {
 
-				var pos = this.toPosition(model.get(valueAttribute));
+				if (model.get('disabled')) {
+					// is disabled
+					this.$el
+						.removeClass('enabled')
+						.addClass('disabled');
+				} else {
+					// is enabled
+					this.$el
+						.removeClass('disabled')
+						.addClass('enabled');
+				}
 
-				model.set({
-					top: numberify(pos.top),
-					left: numberify(pos.left)
-				});
+			});
 
-			}, this);
 
-			// initialize value/position
-			if (model.get(valueAttribute)) {
-				var pos = this.toPosition(model.get(valueAttribute));
-
-				model.set({
-					top: numberify(pos.top),
-					left: numberify(pos.left)
-				});
-			} else {
-				model.set(valueAttribute, this.toValue(model));
-			}
-
+			// initialize value-position system.
+			this.initializeDraggableValuePosition(options);
 		},
 
 		events: {
 			mousedown: 'mousedown',
 		},
 
-		mousedown: function mousedown(e) {
-
-			if (this.$el.is(e.target) && e.which === 1) {
-
-				this.model.set('status', 'dragging');
-
-				this.lastPosition = {
-					x: e.pageX,
-					y: e.pageY
-				};
-
-
-				var offset = this.$el.offset();
-
-				this.handlePosition = {
-					x: e.pageX - offset.left,
-					y: e.pageY - offset.top
-				};
-
-				this.$window
-					.on('mousemove', this.mousemove)
-					.on('mouseup', this.mouseup);
-
-				this.trigger('movestart', this);
-
-				// preventDefault AND stopPropagation
-				// http://stackoverflow.com/questions/1357118/event-preventdefault-vs-return-false
-				return false;
-
-			}
+		/**
+		 * Set the disabled option to true.
+		 *
+		 * @method disable
+		 */
+		disable: function disable() {
+			this.model.set('disabled', true);
 		},
 
-		mousemove: function mousemove(e) {
-
-			var last = this.lastPosition,
-				x = e.pageX,
-				y = e.pageY,
-				dx = x - last.x,
-				dy = y - last.y;
-
-
-			var offset = this.$el.offset(),
-				handleX = this.handlePosition.x + offset.left,
-				handleY = this.handlePosition.y + offset.top;
-
-
-			if ((dx > 0 && x > handleX ) || (dx < 0 && x < handleX)) {
-				this.moveX(dx, {
-					agent: 'mousemove'
-				});
-			}
-
-			if ((dy > 0 && y > handleY) || (dy < 0 && y < handleY)) {
-				this.moveY(dy, {
-					agent: 'mousemove'
-				});
-			}
-
-			last.x = x;
-			last.y = y;
-
-			// preventDefault AND stopPropagation
-			return false;
-		},
-
-		mouseup: function mouseup() {
-			this.$window.off('mousemove', this.mousemove);
-
-			delete this.lastPosition;
-
-			this.model.set('status', 'stopped');
-
-
-			this.trigger('movestop', this);
-
-			// preventDefault AND stopPropagation
-			//return false;
+		/**
+		 * Set the disabled option to false.
+		 *
+		 * @method enable
+		 */
+		enable: function enable() {
+			this.model.set('disabled', false);
 		},
 
 		axis: 'xy',
-
-		valueAttribute: 'value',
-
-		setValue: function setValue(value) {
-			this.model.set(this.valueAttribute, value);
-			return this;
-		},
-
-		toValue: function toValue(model) {
-			return 'At ' + model.get('top') + ' x ' + model.get('left');
-		},
-
-		toPosition: function toPosition(value) {
-			var values = value.split('x');
-
-			return {
-				top: values[0].replace(/[^0-9\-]/g, ''),
-				left: values[1].replace(/[^0-9\-]/g, ''),
-			};
-		},
 
 		map: {
 			left: '->css:left',
@@ -214,11 +105,13 @@ define(function (require, exports, module) {
 		},
 
 		stringifiers: {
-			left: stringifyPositionalValue,
-			top: stringifyPositionalValue
+			left: helpers.stringifyPositionalValue,
+			top: helpers.stringifyPositionalValue,
 		}
 	});
 
 	// extend
-	draggable.proto(require('./__backbone-ui-draggable/move'));
+	draggable.proto(require('./__backbone-ui-draggable/value-position'));
+	draggable.proto(require('./__backbone-ui-draggable/movement'));
+	draggable.proto(require('./__backbone-ui-draggable/event-handlers'));
 });

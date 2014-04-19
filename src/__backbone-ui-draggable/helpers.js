@@ -23,8 +23,6 @@ define(function (require, exports, module) {
 
 	};
 
-
-
 	exports.fitValueWithin = function fitValueWithin(value, min, max) {
 
 		if (!isNaN(min)) {
@@ -39,7 +37,16 @@ define(function (require, exports, module) {
 	};
 
 
-	exports.numberify = function numberify(v) {
-		return parseInt(v, 10);
+	/**
+	 * Just adds 'px' string to numerical values.
+	 *
+	 * @method stringifyPositionalValue
+	 * @private
+	 */
+	var isNumber = /^[0-9\-]+$/;
+	exports.stringifyPositionalValue = function stringifyPositionalValue(v) {
+		// [1] check if it is a isNumber
+		return isNumber.test(v) ? v + 'px' : v;
 	};
+
 });
