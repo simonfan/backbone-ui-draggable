@@ -18,7 +18,11 @@ require.config({
 		qunit: '../bower_components/qunit/qunit/qunit',
 		'requirejs-text': '../bower_components/requirejs-text/text',
 		underscore: '../bower_components/underscore/underscore',
-		subject: '../bower_components/subject/built/subject'
+		subject: '../bower_components/subject/built/subject',
+		containers: '../bower_components/containers/built/containers',
+		deep: '../bower_components/deep/built/deep',
+		itr: '../bower_components/itr/built/itr',
+		'object-query': '../bower_components/object-query/built/object-query'
 	},
 	shim: {
 		backbone: {
@@ -36,6 +40,11 @@ require.config({
 		},
 		should: {
 			exports: 'should'
+		},
+		'jquery-ui': {
+			deps: [
+				'jquery'
+			]
 		}
 	}
 });

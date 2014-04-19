@@ -27,6 +27,13 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/__backbone-ui-draggable/when.js": {
+            "name": "src/__backbone-ui-draggable/when.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src/index.js": {
             "name": "src/index.js",
             "modules": {
@@ -157,8 +164,35 @@
             "module": "backbone-ui-draggable"
         },
         {
+            "file": "src/__backbone-ui-draggable/when.js",
+            "line": 6,
+            "description": "Create complex listeners",
+            "itemtype": "method",
+            "name": "when",
+            "params": [
+                {
+                    "name": "criteria",
+                    "description": "\n    The criteria to be passed to objectQuery",
+                    "type": "Object"
+                },
+                {
+                    "name": "callback",
+                    "description": "",
+                    "type": "Function"
+                },
+                {
+                    "name": "context",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "",
+            "module": "backbone-ui-draggable"
+        },
+        {
             "file": "src/index.js",
-            "line": 82,
+            "line": 84,
             "description": "Set the disabled option to true.",
             "itemtype": "method",
             "name": "disable",
@@ -167,7 +201,7 @@
         },
         {
             "file": "src/index.js",
-            "line": 91,
+            "line": 93,
             "description": "Set the disabled option to false.",
             "itemtype": "method",
             "name": "enable",

@@ -75,6 +75,8 @@ define(function (require, exports, module) {
 			this.initializeDraggableValuePosition(options);
 		},
 
+		when: require('./__backbone-ui-draggable/when'),
+
 		events: {
 			mousedown: 'mousedown',
 		},

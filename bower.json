@@ -6,7 +6,8 @@
   "dependencies": {
     "model-dock": "~0.3.6",
     "jquery": "~2.1.0",
-    "lowercase-backbone": "~0.2.5"
+    "lowercase-backbone": "~0.2.5",
+    "object-query": "*"
   },
   "devDependencies": {
     "requirejs": "*",

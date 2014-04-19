@@ -17,6 +17,26 @@ function (draggable            ,  $      ,  Backbone ,  modelDock  , undefined  
 		model: squareModel
 	});
 
+	// listen for some complex position
+	d.when({
+		left: {
+			$gt: 200,
+			$lt: 320
+		},
+
+		top: {
+			$gt: 0,
+			$lt: 255
+		}
+	}, function (draggable) {
+
+		var top = draggable.model.get('top'),
+			inverse = 255 - top;
+
+		draggable.$el.css('background-color', 'rgb(255,' + top + ',' + inverse + ')');
+
+	})
+
 
 
 	// jquery-ui comparative

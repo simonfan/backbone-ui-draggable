@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/index.js - backbone-ui-draggable</title>
+    <title>src/__backbone-ui-draggable/when.js - backbone-ui-draggable</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -86,128 +86,37 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: src/index.js</h1>
+                        <h1 class="file-heading">File: src/__backbone-ui-draggable/when.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-//     BackboneUiDraggable
-//     (c) simonfan
-//     BackboneUiDraggable is licensed under the MIT terms.
-
-/**
- * AMD module.
- *
- * @module BackboneUiDraggable
- */
-
 define(function (require, exports, module) {
 	&#x27;use strict&#x27;;
 
-	var backbone = require(&#x27;lowercase-backbone&#x27;),
-		modelDock = require(&#x27;model-dock&#x27;),
-		_ = require(&#x27;lodash&#x27;),
-		$ = require(&#x27;jquery&#x27;);
+	var objectQuery = require(&#x27;object-query&#x27;);
 
-	var helpers = require(&#x27;./__backbone-ui-draggable/helpers&#x27;);
+	/**
+	 * Create complex listeners
+	 *
+	 * @method when
+	 * @param criteria {Object}
+	 *     The criteria to be passed to objectQuery
+	 * @param callback {Function}
+	 * @param [context] {Object}
+	 */
+	module.exports = function when(criteria, callback, context) {
 
-	var draggable = module.exports = modelDock.extend({
-		initialize: function initialize(options) {
+		var query = objectQuery(criteria),
+			model = this.model;
 
-			backbone.view.prototype.initialize.call(this, options);
+		model.on(&#x27;change&#x27;, function () {
 
-			this.initializeModelDock(options);
-
-			this.initializeUIDraggable(options);
-		},
-
-		initializeUIDraggable: function initializeUIDraggable(options) {
-
-			// bind methods
-			_.bindAll(this, &#x27;mousedown&#x27;, &#x27;mousemove&#x27;, &#x27;mouseup&#x27;);
-
-			// window
-			this.$window = $(window);
-
-			// canvas
-			this.$canvas = options.canvas || this.canvas || this.$el.parent();
-
-			var pos = this.$el.position();
-
-			var data = $.extend({
-				status: &#x27;stopped&#x27;,
-				disabled: false,
-				top: parseInt(pos.top, 10),
-				left: parseInt(pos.left, 10)
-
-			}, options);
-
-			// set initial data
-			var model = this.model;
-			model.set(data);
-
-			// listen to enable and disable option changes
-			this.listenTo(model, &#x27;change:disabled&#x27;, function (model) {
-
-				if (model.get(&#x27;disabled&#x27;)) {
-					// is disabled
-					this.$el
-						.removeClass(&#x27;enabled&#x27;)
-						.addClass(&#x27;disabled&#x27;);
-				} else {
-					// is enabled
-					this.$el
-						.removeClass(&#x27;disabled&#x27;)
-						.addClass(&#x27;enabled&#x27;);
-				}
-
-			});
-
-
-			// initialize value-position system.
-			this.initializeDraggableValuePosition(options);
-		},
-
-		when: require(&#x27;./__backbone-ui-draggable/when&#x27;),
-
-		events: {
-			mousedown: &#x27;mousedown&#x27;,
-		},
-
-		/**
-		 * Set the disabled option to true.
-		 *
-		 * @method disable
-		 */
-		disable: function disable() {
-			this.model.set(&#x27;disabled&#x27;, true);
-		},
-
-		/**
-		 * Set the disabled option to false.
-		 *
-		 * @method enable
-		 */
-		enable: function enable() {
-			this.model.set(&#x27;disabled&#x27;, false);
-		},
-
-		axis: &#x27;xy&#x27;,
-
-		map: {
-			left: &#x27;-&gt;css:left&#x27;,
-			top: &#x27;-&gt;css:top&#x27;,
-		},
-
-		stringifiers: {
-			left: helpers.stringifyPositionalValue,
-			top: helpers.stringifyPositionalValue,
-		}
-	});
-
-	// extend
-	draggable.proto(require(&#x27;./__backbone-ui-draggable/value-position&#x27;));
-	draggable.proto(require(&#x27;./__backbone-ui-draggable/movement&#x27;));
-	draggable.proto(require(&#x27;./__backbone-ui-draggable/event-handlers&#x27;));
+			if (query(model.toJSON())) {
+				// run callback with the draggable as first argument.
+				callback.apply(context, [this]);
+			}
+		}, this);
+	};
 });
 
     </pre>
