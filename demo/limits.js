@@ -1,6 +1,6 @@
-define(['backbone-ui-draggable', 'jquery', 'backbone', 'model-dock', 'jquery-ui', './square-model.js'],
+define(['backbone-ui-draggable', 'jquery', 'lowercase-backbone', './square-model.js', 'lodash'],
 
-function (draggable            ,  $      ,  Backbone ,  modelDock  , undefined  ,  squareModel    ) {
+function (draggable            ,  $      ,  backbone           ,  squareModel       , _       ) {
 
 
 
@@ -9,15 +9,33 @@ function (draggable            ,  $      ,  Backbone ,  modelDock  , undefined  
 			initialize: function initialize(options) {
 				draggable.prototype.initialize.call(this, options);
 
-				// set intial value
-				this.setValue(squareModel.get(options.proxiedAttribute));
+				var proxiedAttribute = options.proxiedAttribute;
 
-				this.model.on('change:value', function (model) {
+				this.model.on('change:value change:enable', function (model) {
 					// set the proxied value
 					// onto the squareModel!
-					squareModel.set(options.proxiedAttribute, model.get('value'));
+
+					if (_.contains(model.get('enable'), 'enable')) {
+						squareModel.set(proxiedAttribute, model.get('value'));
+					} else {
+
+						squareModel.set(proxiedAttribute, false);
+
+						console.log(proxiedAttribute + ' limit not enabled');
+					}
 
 				}, this);
+
+				// set intial value
+				var initialValue = squareModel.get(proxiedAttribute);
+
+				if (!_.isUndefined(initialValue)) {
+
+
+					// enable
+					this.model.set('enable', ['enable']);
+					this.setValue(initialValue);
+				}
 			},
 
 
@@ -25,7 +43,8 @@ function (draggable            ,  $      ,  Backbone ,  modelDock  , undefined  
 			map: {
 				left: '->css:left',
 				top: '->css:top',
-				value: 'input'
+				value: 'input[type="text"]',
+				enable: 'input[type="checkbox"]'
 			},
 		}),
 		horizontal = base.extend({
@@ -99,7 +118,10 @@ function (draggable            ,  $      ,  Backbone ,  modelDock  , undefined  
 	// top
 	limits.minTop = minHorizontal({
 		el: $('#minTop'),
-		proxiedAttribute: 'minTop'
+		proxiedAttribute: 'minTop',
+		model: backbone.model({
+			enable: 'enable'
+		})
 	});
 
 	limits.maxTop = maxHorizontal({
@@ -139,6 +161,7 @@ function (draggable            ,  $      ,  Backbone ,  modelDock  , undefined  
 		el: $('#maxRight'),
 		proxiedAttribute: 'maxRight'
 	});
+
 
 
 });
