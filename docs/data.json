@@ -104,7 +104,7 @@
         },
         {
             "file": "src/__backbone-ui-draggable/animation.js",
-            "line": 48,
+            "line": 49,
             "description": "The same as moveY, but with animation.",
             "itemtype": "method",
             "name": "animateY",

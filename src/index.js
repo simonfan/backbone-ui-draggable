@@ -126,6 +126,7 @@ define(function (require, exports, module) {
 
 	// extend
 	draggable.proto(require('./__backbone-ui-draggable/value-position'));
+	draggable.proto(require('./__backbone-ui-draggable/delta-calc'));
 	draggable.proto(require('./__backbone-ui-draggable/movement'));
 	draggable.proto(require('./__backbone-ui-draggable/animation'));
 	draggable.proto(require('./__backbone-ui-draggable/event-handlers'));

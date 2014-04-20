@@ -42,7 +42,8 @@ define(function (require, exports, module) {
 			left: parseFloat(this.model.get('left')) + delta
 		}, options);
 
-		return this;
+		// return remainder
+		return attemptedDelta - delta;
 	};
 
 	/**
@@ -83,6 +84,23 @@ define(function (require, exports, module) {
 			top: parseFloat(this.model.get('top')) + delta
 		}, options);
 
-		return this;
+		// return remainder
+		return attemptedDelta - delta;
+	};
+
+	exports.animateToLeft = function animateToLeft(attemptedDelta, silent) {
+		return -1 * this.animateX(-1 * attemptedDelta, silent);
+	};
+
+	exports.animateToRight = function animateToRight(attemptedDelta, silent) {
+		return this.animateX(attemptedDelta, silent);
+	};
+
+	exports.animateToTop = function animateToTop(attemptedDelta, silent) {
+		return -1 * this.animateY(-1 * attemptedDelta, silent);
+	};
+
+	exports.animateToBottom = function animateToBottom(attemptedDelta, silent) {
+		return this.animateY(attemptedDelta, silent);
 	};
 });

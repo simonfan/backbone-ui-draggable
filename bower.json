@@ -1,7 +1,7 @@
 {
   "name": "backbone-ui-draggable",
   "main": "built/backbone-ui-draggable.js",
-  "version": "0.6.7",
+  "version": "0.7.7",
   "description": "Some module...",
   "dependencies": {
     "model-dock": "~0.3.6",

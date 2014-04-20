@@ -197,7 +197,7 @@ define('__backbone-ui-draggable/value-position',['require','exports','module','.
 	};
 });
 
-define('__backbone-ui-draggable/movement',['require','exports','module','lodash','./helpers'],function (require, exports, module) {
+define('__backbone-ui-draggable/delta-calc',['require','exports','module','lodash','./helpers'],function (require, exports, module) {
 	
 
 	var _ = require('lodash');
@@ -230,6 +230,41 @@ define('__backbone-ui-draggable/movement',['require','exports','module','lodash'
 			// return the allowed delta
 		return left - previousLeft;
 	};
+
+	exports.yAllowedDelta = function yAllowedDelta(attemptedDelta) {
+
+		var model = this.model,
+			previousTop = parseFloat(model.get('top')),
+
+			// convert the attemptedDelta into attemptedTop
+			attemptedTop = previousTop + attemptedDelta;
+
+		var height = parseFloat(this.$el.height());
+
+		// minimums
+		var minTop = parseFloat(model.get('minTop')),
+			minBottom = parseFloat(model.get('minBottom')),
+			min = h.max(minTop, minBottom - height);
+
+		// maximums
+		var maxTop = parseFloat(model.get('maxTop')),
+			maxBottom = parseFloat(model.get('maxBottom')),
+			max = h.min(maxTop, maxBottom - height);
+
+			// get the allowed top
+		var top = h.fitValueWithin(attemptedTop, min, max);
+
+		// return allowed delta
+		return top - previousTop;
+	};
+});
+
+define('__backbone-ui-draggable/movement',['require','exports','module','lodash','./helpers'],function (require, exports, module) {
+	
+
+	var _ = require('lodash');
+
+	var h = require('./helpers');
 
 	exports.moveX = function moveX(attemptedDelta, options) {
 
@@ -275,35 +310,6 @@ define('__backbone-ui-draggable/movement',['require','exports','module','lodash'
 			return 0;
 		}
 	};
-
-
-	exports.yAllowedDelta = function yAllowedDelta(attemptedDelta) {
-
-		var model = this.model,
-			previousTop = parseFloat(model.get('top')),
-
-			// convert the attemptedDelta into attemptedTop
-			attemptedTop = previousTop + attemptedDelta;
-
-		var height = parseFloat(this.$el.height());
-
-		// minimums
-		var minTop = parseFloat(model.get('minTop')),
-			minBottom = parseFloat(model.get('minBottom')),
-			min = h.max(minTop, minBottom - height);
-
-		// maximums
-		var maxTop = parseFloat(model.get('maxTop')),
-			maxBottom = parseFloat(model.get('maxBottom')),
-			max = h.min(maxTop, maxBottom - height);
-
-			// get the allowed top
-		var top = h.fitValueWithin(attemptedTop, min, max);
-
-		// return allowed delta
-		return top - previousTop;
-	};
-
 
 	exports.moveY = function moveY(attemptedDelta, options) {
 
@@ -408,7 +414,8 @@ define('__backbone-ui-draggable/animation',['require','exports','module','lodash
 			left: parseFloat(this.model.get('left')) + delta
 		}, options);
 
-		return this;
+		// return remainder
+		return attemptedDelta - delta;
 	};
 
 	/**
@@ -449,7 +456,24 @@ define('__backbone-ui-draggable/animation',['require','exports','module','lodash
 			top: parseFloat(this.model.get('top')) + delta
 		}, options);
 
-		return this;
+		// return remainder
+		return attemptedDelta - delta;
+	};
+
+	exports.animateToLeft = function animateToLeft(attemptedDelta, silent) {
+		return -1 * this.animateX(-1 * attemptedDelta, silent);
+	};
+
+	exports.animateToRight = function animateToRight(attemptedDelta, silent) {
+		return this.animateX(attemptedDelta, silent);
+	};
+
+	exports.animateToTop = function animateToTop(attemptedDelta, silent) {
+		return -1 * this.animateY(-1 * attemptedDelta, silent);
+	};
+
+	exports.animateToBottom = function animateToBottom(attemptedDelta, silent) {
+		return this.animateY(attemptedDelta, silent);
 	};
 });
 
@@ -550,7 +574,7 @@ define('__backbone-ui-draggable/event-handlers',['require','exports','module'],f
  * @module BackboneUiDraggable
  */
 
-define('backbone-ui-draggable',['require','exports','module','lowercase-backbone','model-dock','lodash','jquery','./__backbone-ui-draggable/helpers','./__backbone-ui-draggable/when','./__backbone-ui-draggable/value-position','./__backbone-ui-draggable/movement','./__backbone-ui-draggable/animation','./__backbone-ui-draggable/event-handlers'],function (require, exports, module) {
+define('backbone-ui-draggable',['require','exports','module','lowercase-backbone','model-dock','lodash','jquery','./__backbone-ui-draggable/helpers','./__backbone-ui-draggable/when','./__backbone-ui-draggable/value-position','./__backbone-ui-draggable/delta-calc','./__backbone-ui-draggable/movement','./__backbone-ui-draggable/animation','./__backbone-ui-draggable/event-handlers'],function (require, exports, module) {
 	
 
 	var backbone = require('lowercase-backbone'),
@@ -668,6 +692,7 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 
 	// extend
 	draggable.proto(require('./__backbone-ui-draggable/value-position'));
+	draggable.proto(require('./__backbone-ui-draggable/delta-calc'));
 	draggable.proto(require('./__backbone-ui-draggable/movement'));
 	draggable.proto(require('./__backbone-ui-draggable/animation'));
 	draggable.proto(require('./__backbone-ui-draggable/event-handlers'));
