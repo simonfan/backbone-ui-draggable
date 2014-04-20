@@ -1,41 +1,7 @@
-define(['backbone-ui-draggable', 'jquery', 'backbone', 'model-dock', 'jquery-ui', './square-model.js', './limits.js'],
+define(['jquery', 'jquery-ui', './limits.js', './draggable.js', 'model-dock'],
 
-function (draggable            ,  $      ,  Backbone ,  modelDock  , undefined  ,  squareModel    ,  limits   ) {
+function ($     ,  undefined  , limits      ,  d              , modelDock   ) {
 
-
-	// the draggable objet
-	var d = window.d = draggable({
-		el: $('#draggable'),
-
-		map: {
-			left: ['->css:left', '[data-attribute="left"]'],
-			top: ['->css:top', '[data-attribute="top"]'],
-			status: '[data-attribute="status"]',
-			value: '[data-attribute="value"]',
-		},
-
-		model: squareModel
-	});
-
-	// listen for some complex position
-	d.when({
-		left: {
-			$gt: 200,
-			$lt: 320
-		},
-
-		top: {
-			$gt: 0,
-			$lt: 255
-		}
-	}, function (draggable) {
-
-		var top = draggable.model.get('top'),
-			inverse = 255 - top;
-
-		draggable.$el.css('background-color', 'rgb(255,' + parseInt(top, 10) + ',' + parseInt(inverse, 10) + ')');
-
-	})
 
 
 
@@ -52,9 +18,9 @@ function (draggable            ,  $      ,  Backbone ,  modelDock  , undefined  
 		var status = $('#draggable-status').val();
 
 		if (status === 'enabled') {
-			d.enable();
+			d.enableDraggable();
 		} else {
-			d.disable();
+			d.disableDraggable();
 		}
 
 	});

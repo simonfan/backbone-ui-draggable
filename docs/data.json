@@ -11,6 +11,13 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/__backbone-ui-draggable/animation.js": {
+            "name": "src/__backbone-ui-draggable/animation.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src/__backbone-ui-draggable/event-handlers.js": {
             "name": "src/__backbone-ui-draggable/event-handlers.js",
             "modules": {
@@ -89,6 +96,26 @@
     "classitems": [
         {
             "file": "src/__backbone-ui-draggable/animate.js",
+            "line": 13,
+            "description": "Call animations as if you were running on plain jquery.\nWe'll just adjust the model to sync itself with the new positions.",
+            "itemtype": "method",
+            "name": "animate",
+            "params": [
+                {
+                    "name": "properties",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "src/__backbone-ui-draggable/animation.js",
             "line": 13,
             "description": "Call animations as if you were running on plain jquery.\nWe'll just adjust the model to sync itself with the new positions.",
             "itemtype": "method",
@@ -222,7 +249,7 @@
             "line": 87,
             "description": "Set the disabled option to true.",
             "itemtype": "method",
-            "name": "disable",
+            "name": "disableDraggable",
             "class": "",
             "module": "BackboneUiDraggable"
         },
@@ -231,7 +258,7 @@
             "line": 96,
             "description": "Set the disabled option to false.",
             "itemtype": "method",
-            "name": "enable",
+            "name": "enableDraggable",
             "class": "",
             "module": "BackboneUiDraggable"
         }

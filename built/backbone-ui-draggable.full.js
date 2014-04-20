@@ -164,59 +164,36 @@ define('__backbone-ui-draggable/animate',['require','exports','module','lodash']
 			complete: arguments[3]
 		};
 
-		// on progress, update position:
-		if (options.progress) {
 
-			// progress func already defined.
+		// [3] get the original progress function
+		var originalProgressFunc = options.progress;
 
-			var originalProgressFunc = options.progress;
+		// [4] get current position
+		var lastPos = this.$el.position();
 
-			options.progress = _.bind(function () {
 
-				// first call the original progress function
+		// [5] set new progress function
+		options.progress = _.bind(function () {
+
+			// 'this' refers to the draggable object
+
+			// first call the original progress function
+			if (originalProgressFunc) {
 				originalProgressFunc.apply(this.$el, arguments);
+			}
 
+			var currPos = this.$el.position(),
+				delta = {
+					top: currPos.top - lastPos.top,
+					left: currPos.left - lastPos.left
+				};
 
-				// 'this' refers to the draggable object
+			update.call(this, delta);
 
-				var currPos = this.$el.position(),
-					delta = {
-						top: currPos.top - lastPos.top,
-						left: currPos.left - lastPos.left
-					};
+			// change lastPos
+			lastPos = currPos;
 
-				update.call(this, delta);
-
-				// change lastPos
-				lastPos = currPos;
-
-			}, this);
-
-		} else {
-
-
-				// create a var to store the last position
-			var lastPos = this.$el.position();
-
-			options.progress = _.bind(function (animation, progress, remainingMs) {
-				// 'this' refers to the draggable object
-
-				var currPos = this.$el.position(),
-					delta = {
-						top: currPos.top - lastPos.top,
-						left: currPos.left - lastPos.left
-					};
-
-				update.call(this, delta);
-
-				// change lastPos
-				lastPos = currPos;
-
-			}, this);
-		}
-
-		// get reference to draggable object
-		var draggable = this;
+		}, this);
 
 		// run animation
 		this.$el.animate(properties, options);
@@ -661,18 +638,18 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 		/**
 		 * Set the disabled option to true.
 		 *
-		 * @method disable
+		 * @method disableDraggable
 		 */
-		disable: function disable() {
+		disableDraggable: function disableDraggable() {
 			this.model.set('disabled', true);
 		},
 
 		/**
 		 * Set the disabled option to false.
 		 *
-		 * @method enable
+		 * @method enableDraggable
 		 */
-		enable: function enable() {
+		enableDraggable: function enableDraggable() {
 			this.model.set('disabled', false);
 		},
 

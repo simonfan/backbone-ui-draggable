@@ -87,18 +87,18 @@ define(function (require, exports, module) {
 		/**
 		 * Set the disabled option to true.
 		 *
-		 * @method disable
+		 * @method disableDraggable
 		 */
-		disable: function disable() {
+		disableDraggable: function disableDraggable() {
 			this.model.set('disabled', true);
 		},
 
 		/**
 		 * Set the disabled option to false.
 		 *
-		 * @method enable
+		 * @method enableDraggable
 		 */
-		enable: function enable() {
+		enableDraggable: function enableDraggable() {
 			this.model.set('disabled', false);
 		},
 
