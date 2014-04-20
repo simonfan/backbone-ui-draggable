@@ -125,6 +125,9 @@ define(function (require, exports, module) {
 			// bind methods
 			_.bindAll(this, &#x27;mousedown&#x27;, &#x27;mousemove&#x27;, &#x27;mouseup&#x27;);
 
+			// add class
+			this.$el.addClass(this.draggableClass);
+
 			// window
 			this.$window = $(window);
 
@@ -151,13 +154,13 @@ define(function (require, exports, module) {
 				if (model.get(&#x27;disabled&#x27;)) {
 					// is disabled
 					this.$el
-						.removeClass(&#x27;enabled&#x27;)
-						.addClass(&#x27;disabled&#x27;);
+						.removeClass(this.draggableClass + &#x27;-enabled&#x27;)
+						.addClass(this.draggableClass + &#x27;-disabled&#x27;);
 				} else {
 					// is enabled
 					this.$el
-						.removeClass(&#x27;disabled&#x27;)
-						.addClass(&#x27;enabled&#x27;);
+						.removeClass(this.draggableClass + &#x27;-disabled&#x27;)
+						.addClass(this.draggableClass + &#x27;-enabled&#x27;);
 				}
 
 			});
@@ -166,6 +169,14 @@ define(function (require, exports, module) {
 			// initialize value-position system.
 			this.initializeDraggableValuePosition(options);
 		},
+
+		/**
+		 * The class to be added to the draggable html eleemnt.
+		 *
+		 * @property draggableClass
+		 * @type String
+		 */
+		draggableClass: &#x27;draggable&#x27;,
 
 		events: {
 			mousedown: &#x27;mousedown&#x27;,

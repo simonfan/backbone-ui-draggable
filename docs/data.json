@@ -246,7 +246,17 @@
         },
         {
             "file": "src/index.js",
-            "line": 87,
+            "line": 81,
+            "description": "The class to be added to the draggable html eleemnt.",
+            "itemtype": "property",
+            "name": "draggableClass",
+            "type": "String",
+            "class": "",
+            "module": "BackboneUiDraggable"
+        },
+        {
+            "file": "src/index.js",
+            "line": 98,
             "description": "Set the disabled option to true.",
             "itemtype": "method",
             "name": "disableDraggable",
@@ -255,7 +265,7 @@
         },
         {
             "file": "src/index.js",
-            "line": 96,
+            "line": 107,
             "description": "Set the disabled option to false.",
             "itemtype": "method",
             "name": "enableDraggable",
