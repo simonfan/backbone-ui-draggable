@@ -4,13 +4,6 @@
         "version": "0.0.0"
     },
     "files": {
-        "src/__backbone-ui-draggable/animate.js": {
-            "name": "src/__backbone-ui-draggable/animate.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
         "src/__backbone-ui-draggable/animation.js": {
             "name": "src/__backbone-ui-draggable/animation.js",
             "modules": {},
@@ -95,41 +88,31 @@
     "classes": {},
     "classitems": [
         {
-            "file": "src/__backbone-ui-draggable/animate.js",
-            "line": 13,
-            "description": "Call animations as if you were running on plain jquery.\nWe'll just adjust the model to sync itself with the new positions.",
+            "file": "src/__backbone-ui-draggable/animation.js",
+            "line": 6,
+            "description": "The same as moveX, but with animation.",
             "itemtype": "method",
-            "name": "animate",
+            "name": "animateX",
             "params": [
                 {
-                    "name": "properties",
+                    "name": "attemptedDelta",
                     "description": "",
-                    "type": "Object"
-                },
-                {
-                    "name": "options",
-                    "description": "",
-                    "type": "Object"
+                    "type": "Number"
                 }
             ],
             "class": ""
         },
         {
             "file": "src/__backbone-ui-draggable/animation.js",
-            "line": 13,
-            "description": "Call animations as if you were running on plain jquery.\nWe'll just adjust the model to sync itself with the new positions.",
+            "line": 48,
+            "description": "The same as moveY, but with animation.",
             "itemtype": "method",
-            "name": "animate",
+            "name": "animateY",
             "params": [
                 {
-                    "name": "properties",
+                    "name": "attemptedDelta",
                     "description": "",
-                    "type": "Object"
-                },
-                {
-                    "name": "options",
-                    "description": "",
-                    "type": "Object"
+                    "type": "Number"
                 }
             ],
             "class": ""
@@ -256,7 +239,7 @@
         },
         {
             "file": "src/index.js",
-            "line": 98,
+            "line": 96,
             "description": "Set the disabled option to true.",
             "itemtype": "method",
             "name": "disableDraggable",
@@ -265,7 +248,7 @@
         },
         {
             "file": "src/index.js",
-            "line": 107,
+            "line": 105,
             "description": "Set the disabled option to false.",
             "itemtype": "method",
             "name": "enableDraggable",

@@ -104,104 +104,6 @@ define('__backbone-ui-draggable/when',['require','exports','module','object-quer
 	};
 });
 
-define('__backbone-ui-draggable/animate',['require','exports','module','lodash'],function (require, exports, module) {
-	
-
-	var _ = require('lodash');
-
-	function update(delta) {
-
-		this.moveX(delta.left, { force: true });
-		this.moveY(delta.top, { force: true });
-	};
-
-
-	/**
-	 * Call animations as if you were running on plain jquery.
-	 * We'll just adjust the model to sync itself with the new positions.
-	 *
-	 * @method animate
-	 * @param properties {Object}
-	 * @param options {Object}
-	 */
-	module.exports = function animate(properties, options) {
-
-		// [1] check allowed deltas
-		var top = parseFloat(properties.top),
-			left = parseFloat(properties.left);
-
-		// remainders
-		var remainders = {};
-
-		if (!isNaN(top)) {
-			var currTop = parseFloat(this.get('top')),
-				attemptedDelta = top - currTop,
-				delta = this.yAllowedDelta(attemptedDelta);
-
-			properties.top = currTop + delta;
-
-			remainders.top = attemptedDelta - delta;
-		}
-
-		if (!isNaN(left)) {
-			var currLeft = parseFloat(this.get('left')),
-				attemptedDelta = left - currLeft,
-				delta = this.xAllowedDelta(attemptedDelta);
-
-			properties.left = currLeft + delta;
-
-			remainders.left = attemptedDelta - delta;
-		}
-
-
-		// [2] set up options
-		options = options || {};
-
-		// jquery animate has two interfaces.. we should support them both.
-		options = _.isObject(options) ? options : {
-			duration: arguments[1],
-			easing: arguments[2],
-			complete: arguments[3]
-		};
-
-
-		// [3] get the original progress function
-		var originalProgressFunc = options.progress;
-
-		// [4] get current position
-		var lastPos = this.$el.position();
-
-
-		// [5] set new progress function
-		options.progress = _.bind(function () {
-
-			// 'this' refers to the draggable object
-
-			// first call the original progress function
-			if (originalProgressFunc) {
-				originalProgressFunc.apply(this.$el, arguments);
-			}
-
-			var currPos = this.$el.position(),
-				delta = {
-					top: currPos.top - lastPos.top,
-					left: currPos.left - lastPos.left
-				};
-
-			update.call(this, delta);
-
-			// change lastPos
-			lastPos = currPos;
-
-		}, this);
-
-		// run animation
-		this.$el.animate(properties, options);
-
-		return this;
-	};
-});
-
 define('__backbone-ui-draggable/value-position',['require','exports','module','./helpers'],function (require, exports, module) {
 	
 
@@ -462,6 +364,95 @@ define('__backbone-ui-draggable/movement',['require','exports','module','lodash'
 	};
 });
 
+define('__backbone-ui-draggable/animation',['require','exports','module','lodash'],function (require, exports, module) {
+	
+
+	var _ = require('lodash');
+
+	/**
+	 * The same as moveX, but with animation.
+	 *
+	 * @method animateX
+	 * @param attemptedDelta {Number}
+	 */
+	exports.animateX = function animateX(attemptedDelta, options) {
+
+		var delta = this.xAllowedDelta(attemptedDelta);
+
+		// [2] set up options
+		options = options || {};
+		// jquery animate has two interfaces.. we should support them both.
+		options = _.isObject(options) ? options : {
+			duration: arguments[1],
+			easing: arguments[2],
+			complete: arguments[3]
+		};
+
+
+		// [4] get current position
+		var lastLeft = this.$el.position().left;
+
+		// [5] set new progress function
+		options.step = _.bind(function (now, tween) {
+
+			// 'this' refers to the draggable object
+			this.moveX(now - lastLeft, { force: true });
+
+			// change lastLeft
+			lastLeft = now;
+
+		}, this);
+
+		// run animation
+		this.$el.animate({
+			left: parseFloat(this.model.get('left')) + delta
+		}, options);
+
+		return this;
+	};
+
+	/**
+	 * The same as moveY, but with animation.
+	 *
+	 * @method animateY
+	 * @param attemptedDelta {Number}
+	 */
+	exports.animateY = function animateY(attemptedDelta, options) {
+		var delta = this.yAllowedDelta(attemptedDelta);
+
+		// [2] set up options
+		options = options || {};
+		// jquery animate has two interfaces.. we should support them both.
+		options = _.isObject(options) ? options : {
+			duration: arguments[1],
+			easing: arguments[2],
+			complete: arguments[3]
+		};
+
+
+		// [4] get current position
+		var lastTop = this.$el.position().top;
+
+		// [5] set new progress function
+		options.step = _.bind(function (now, tween) {
+
+			// 'this' refers to the draggable object
+			this.moveY(now - lastTop, { force: true });
+
+			// change lastTop
+			lastTop = now;
+
+		}, this);
+
+		// run animation
+		this.$el.animate({
+			top: parseFloat(this.model.get('top')) + delta
+		}, options);
+
+		return this;
+	};
+});
+
 /**
  *
  * @module backbone-ui-draggable
@@ -559,7 +550,7 @@ define('__backbone-ui-draggable/event-handlers',['require','exports','module'],f
  * @module BackboneUiDraggable
  */
 
-define('backbone-ui-draggable',['require','exports','module','lowercase-backbone','model-dock','lodash','jquery','./__backbone-ui-draggable/helpers','./__backbone-ui-draggable/when','./__backbone-ui-draggable/animate','./__backbone-ui-draggable/value-position','./__backbone-ui-draggable/movement','./__backbone-ui-draggable/event-handlers'],function (require, exports, module) {
+define('backbone-ui-draggable',['require','exports','module','lowercase-backbone','model-dock','lodash','jquery','./__backbone-ui-draggable/helpers','./__backbone-ui-draggable/when','./__backbone-ui-draggable/value-position','./__backbone-ui-draggable/movement','./__backbone-ui-draggable/animation','./__backbone-ui-draggable/event-handlers'],function (require, exports, module) {
 	
 
 	var backbone = require('lowercase-backbone'),
@@ -644,8 +635,6 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 
 		when: require('./__backbone-ui-draggable/when'),
 
-		animate: require('./__backbone-ui-draggable/animate'),
-
 		/**
 		 * Set the disabled option to true.
 		 *
@@ -680,6 +669,7 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 	// extend
 	draggable.proto(require('./__backbone-ui-draggable/value-position'));
 	draggable.proto(require('./__backbone-ui-draggable/movement'));
+	draggable.proto(require('./__backbone-ui-draggable/animation'));
 	draggable.proto(require('./__backbone-ui-draggable/event-handlers'));
 });
 

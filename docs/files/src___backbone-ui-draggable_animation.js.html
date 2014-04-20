@@ -95,111 +95,18 @@ define(function (require, exports, module) {
 
 	var _ = require(&#x27;lodash&#x27;);
 
-	function update(delta) {
-
-		this.moveX(delta.left, { force: true });
-		this.moveY(delta.top, { force: true });
-	};
-
-
 	/**
-	 * Call animations as if you were running on plain jquery.
-	 * We&#x27;ll just adjust the model to sync itself with the new positions.
+	 * The same as moveX, but with animation.
 	 *
-	 * @method animate
-	 * @param properties {Object}
-	 * @param options {Object}
+	 * @method animateX
+	 * @param attemptedDelta {Number}
 	 */
-	exports.animate = function animate(properties, options) {
-
-		// [1] check allowed deltas
-		var top = parseFloat(properties.top),
-			left = parseFloat(properties.left);
-
-		// remainders
-		var remainders = {};
-
-		if (!isNaN(top)) {
-			var currTop = parseFloat(this.get(&#x27;top&#x27;)),
-				attemptedDelta = top - currTop,
-				delta = this.yAllowedDelta(attemptedDelta);
-
-			properties.top = currTop + delta;
-
-			remainders.top = attemptedDelta - delta;
-		}
-
-		if (!isNaN(left)) {
-			var currLeft = parseFloat(this.get(&#x27;left&#x27;)),
-				attemptedDelta = left - currLeft,
-				delta = this.xAllowedDelta(attemptedDelta);
-
-			properties.left = currLeft + delta;
-
-			remainders.left = attemptedDelta - delta;
-		}
-
-
-		// [2] set up options
-		options = options || {};
-
-		// jquery animate has two interfaces.. we should support them both.
-		options = _.isObject(options) ? options : {
-			duration: arguments[1],
-			easing: arguments[2],
-			complete: arguments[3]
-		};
-
-
-		// [3] get the original progress function
-		var originalProgressFunc = options.progress;
-
-		// [4] get current position
-		var lastPos = this.$el.position();
-
-
-		// [5] set new progress function
-		options.progress = _.bind(function () {
-
-			// &#x27;this&#x27; refers to the draggable object
-
-			// first call the original progress function
-			if (originalProgressFunc) {
-				originalProgressFunc.apply(this.$el, arguments);
-			}
-
-			var currPos = this.$el.position(),
-				delta = {
-					top: currPos.top - lastPos.top,
-					left: currPos.left - lastPos.left
-				};
-
-			update.call(this, delta);
-
-			// change lastPos
-			lastPos = currPos;
-
-		}, this);
-
-		// run animation
-		this.$el.animate(properties, options);
-
-		return this;
-	};
-
-
-
-
-
 	exports.animateX = function animateX(attemptedDelta, options) {
 
-		var delta = this.yAllowedDelta(attemptedDelta);
-
-
+		var delta = this.xAllowedDelta(attemptedDelta);
 
 		// [2] set up options
 		options = options || {};
-
 		// jquery animate has two interfaces.. we should support them both.
 		options = _.isObject(options) ? options : {
 			duration: arguments[1],
@@ -208,45 +115,67 @@ define(function (require, exports, module) {
 		};
 
 
-		// [3] get the original progress function
-		var originalProgressFunc = options.progress;
-
 		// [4] get current position
-		var lastPos = this.$el.position();
-
+		var lastLeft = this.$el.position().left;
 
 		// [5] set new progress function
-		options.progress = _.bind(function () {
+		options.step = _.bind(function (now, tween) {
 
 			// &#x27;this&#x27; refers to the draggable object
+			this.moveX(now - lastLeft, { force: true });
 
-			// first call the original progress function
-			if (originalProgressFunc) {
-				originalProgressFunc.apply(this.$el, arguments);
-			}
-
-			var currPos = this.$el.position(),
-				delta = {
-					top: currPos.top - lastPos.top,
-					left: currPos.left - lastPos.left
-				};
-
-			update.call(this, delta);
-
-			// change lastPos
-			lastPos = currPos;
+			// change lastLeft
+			lastLeft = now;
 
 		}, this);
 
 		// run animation
-		this.$el.animate(properties, options);
+		this.$el.animate({
+			left: parseFloat(this.model.get(&#x27;left&#x27;)) + delta
+		}, options);
 
 		return this;
-
 	};
 
+	/**
+	 * The same as moveY, but with animation.
+	 *
+	 * @method animateY
+	 * @param attemptedDelta {Number}
+	 */
 	exports.animateY = function animateY(attemptedDelta, options) {
+		var delta = this.yAllowedDelta(attemptedDelta);
 
+		// [2] set up options
+		options = options || {};
+		// jquery animate has two interfaces.. we should support them both.
+		options = _.isObject(options) ? options : {
+			duration: arguments[1],
+			easing: arguments[2],
+			complete: arguments[3]
+		};
+
+
+		// [4] get current position
+		var lastTop = this.$el.position().top;
+
+		// [5] set new progress function
+		options.step = _.bind(function (now, tween) {
+
+			// &#x27;this&#x27; refers to the draggable object
+			this.moveY(now - lastTop, { force: true });
+
+			// change lastTop
+			lastTop = now;
+
+		}, this);
+
+		// run animation
+		this.$el.animate({
+			top: parseFloat(this.model.get(&#x27;top&#x27;)) + delta
+		}, options);
+
+		return this;
 	};
 });
 

@@ -93,8 +93,6 @@ define(function (require, exports, module) {
 
 		when: require('./__backbone-ui-draggable/when'),
 
-		animate: require('./__backbone-ui-draggable/animate'),
-
 		/**
 		 * Set the disabled option to true.
 		 *
@@ -129,5 +127,6 @@ define(function (require, exports, module) {
 	// extend
 	draggable.proto(require('./__backbone-ui-draggable/value-position'));
 	draggable.proto(require('./__backbone-ui-draggable/movement'));
+	draggable.proto(require('./__backbone-ui-draggable/animation'));
 	draggable.proto(require('./__backbone-ui-draggable/event-handlers'));
 });

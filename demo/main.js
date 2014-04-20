@@ -26,15 +26,17 @@ function ($     ,  undefined  , limits      ,  d              , modelDock   ) {
 	});
 
 	// animation control
-	var animationControl = $('#animate').click(function () {
-		var top = $('#animation-top').val(),
-			left = $('#animation-left').val();
+	$('#animate-y').click(function () {
+		var delta = $('#animation').val();
 
-		d.animate({
-			top: top,
-			left: left
-		}, 400);
-	})
+		d.animateY(delta);
+	});
+
+	$('#animate-x').click(function () {
+		var delta = $('#animation').val();
+
+		d.animateX(delta);
+	});
 
 
 
