@@ -5,6 +5,8 @@ define(function (require, exports, module) {
 
 	var h = require('./helpers');
 
+	exports.beforeMoveX = function beforeMoveX() {};
+
 	exports.moveX = function moveX(attemptedDelta, options) {
 
 		if (attemptedDelta) {
@@ -20,6 +22,10 @@ define(function (require, exports, module) {
 
 			// get true delta
 			var delta = options.force ? attemptedDelta : this.xAllowedDelta(attemptedDelta);
+
+			// hooks
+			var hookRes = this.beforeMoveX(delta, options);
+			delta = _.isNumber(hookRes) ? hookRes : delta
 
 			// set left
 			model.set('left', parseFloat(model.get('left')) + delta);
@@ -50,6 +56,8 @@ define(function (require, exports, module) {
 		}
 	};
 
+	exports.beforeMoveY = function beforeMoveY() {};
+
 	exports.moveY = function moveY(attemptedDelta, options) {
 
 		if (attemptedDelta) {
@@ -64,6 +72,10 @@ define(function (require, exports, module) {
 
 			// get allowed delta
 			var delta = this.yAllowedDelta(attemptedDelta);
+
+
+			var hookRes = this.beforeMoveY(delta, options);
+			delta = _.isNumber(hookRes) ? hookRes : delta;
 
 			// set new top
 			model.set('top', parseFloat(model.get('top')) + delta);
