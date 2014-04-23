@@ -12,6 +12,7 @@ function (draggable            ,  $      ,  squareModel       ) {
 			top: ['->css:top', '[data-attribute="top"]'],
 			status: '[data-attribute="status"]',
 			value: '[data-attribute="value"]',
+			'draggable-status': '[data-attribute="draggable-status"]',
 		},
 
 		model: squareModel

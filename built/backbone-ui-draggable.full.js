@@ -489,9 +489,7 @@ define('__backbone-ui-draggable/event-handlers',['require','exports','module'],f
 
 	exports.mousedown = function mousedown(e) {
 
-		if (this.$el.is(e.target) && e.which === 1 && !this.model.get('disabled')) {
-
-			this.model.set('status', 'dragging');
+		if (this.$el.is(e.target) && e.which === 1 && this.draggableEnabled()) {
 
 			this.lastPosition = {
 				x: e.pageX,
@@ -557,9 +555,6 @@ define('__backbone-ui-draggable/event-handlers',['require','exports','module'],f
 
 		delete this.lastPosition;
 
-		this.model.set('status', 'stopped');
-
-
 		this.trigger('movestop', this);
 	};
 });
@@ -611,7 +606,7 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 			var pos = this.$el.position();
 
 			var data = $.extend({
-				status: 'stopped',
+				'draggable-status': 'enabled',
 				disabled: false,
 				top: parseFloat(pos.top),
 				left: parseFloat(pos.left)
@@ -623,18 +618,18 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 			model.set(data);
 
 			// listen to enable and disable option changes
-			this.listenTo(model, 'change:disabled', function (model) {
+			this.listenTo(model, 'change:draggable-status', function (model) {
 
-				if (model.get('disabled')) {
-					// is disabled
-					this.$el
-						.removeClass(this.draggableClass + '-enabled')
-						.addClass(this.draggableClass + '-disabled');
-				} else {
+				if (this.draggableEnabled()) {
 					// is enabled
 					this.$el
 						.removeClass(this.draggableClass + '-disabled')
 						.addClass(this.draggableClass + '-enabled');
+				} else {
+					// is disabled
+					this.$el
+						.removeClass(this.draggableClass + '-enabled')
+						.addClass(this.draggableClass + '-disabled');
 				}
 
 			});
@@ -665,7 +660,7 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 		 * @method disableDraggable
 		 */
 		disableDraggable: function disableDraggable() {
-			this.model.set('disabled', true);
+			this.model.set('draggable-status', 'disabled');
 		},
 
 		/**
@@ -674,7 +669,11 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 		 * @method enableDraggable
 		 */
 		enableDraggable: function enableDraggable() {
-			this.model.set('disabled', false);
+			this.model.set('draggable-status', 'enabled');
+		},
+
+		draggableEnabled: function draggableEnabled() {
+			return this.model.get('draggable-status') === 'enabled';
 		},
 
 		axis: 'xy',

@@ -10,21 +10,6 @@ function ($     ,  undefined  , limits      ,  d              , modelDock   ) {
 		containment: 'parent'
 	})
 
-
-
-	// draggable enabling contrl
-	var control = $('#draggable-status').change(function (e) {
-
-		var status = $('#draggable-status').val();
-
-		if (status === 'enabled') {
-			d.enableDraggable();
-		} else {
-			d.disableDraggable();
-		}
-
-	});
-
 	// animation control
 	$('#animate-y').click(function () {
 		var delta = $('#animation').val();

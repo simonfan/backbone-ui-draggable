@@ -102,9 +102,7 @@ define(function (require, exports, module) {
 
 	exports.mousedown = function mousedown(e) {
 
-		if (this.$el.is(e.target) &amp;&amp; e.which === 1 &amp;&amp; !this.model.get(&#x27;disabled&#x27;)) {
-
-			this.model.set(&#x27;status&#x27;, &#x27;dragging&#x27;);
+		if (this.$el.is(e.target) &amp;&amp; e.which === 1 &amp;&amp; this.draggableEnabled()) {
 
 			this.lastPosition = {
 				x: e.pageX,
@@ -169,9 +167,6 @@ define(function (require, exports, module) {
 		this.$window.off(&#x27;mousemove&#x27;, this.mousemove);
 
 		delete this.lastPosition;
-
-		this.model.set(&#x27;status&#x27;, &#x27;stopped&#x27;);
-
 
 		this.trigger(&#x27;movestop&#x27;, this);
 	};
