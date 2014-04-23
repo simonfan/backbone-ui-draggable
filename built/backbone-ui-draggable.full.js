@@ -606,7 +606,7 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 			var pos = this.$el.position();
 
 			var data = $.extend({
-				'draggable-status': 'enabled',
+				draggableStatus: 'enabled',
 				disabled: false,
 				top: parseFloat(pos.top),
 				left: parseFloat(pos.left)
@@ -618,7 +618,7 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 			model.set(data);
 
 			// listen to enable and disable option changes
-			this.listenTo(model, 'change:draggable-status', function (model) {
+			this.listenTo(model, 'change:draggableStatus', function (model) {
 
 				if (this.draggableEnabled()) {
 					// is enabled
@@ -660,7 +660,7 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 		 * @method disableDraggable
 		 */
 		disableDraggable: function disableDraggable() {
-			this.model.set('draggable-status', 'disabled');
+			this.model.set('draggableStatus', 'disabled');
 		},
 
 		/**
@@ -669,11 +669,11 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 		 * @method enableDraggable
 		 */
 		enableDraggable: function enableDraggable() {
-			this.model.set('draggable-status', 'enabled');
+			this.model.set('draggableStatus', 'enabled');
 		},
 
 		draggableEnabled: function draggableEnabled() {
-			return this.model.get('draggable-status') === 'enabled';
+			return this.model.get('draggableStatus') === 'enabled';
 		},
 
 		axis: 'xy',

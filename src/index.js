@@ -45,7 +45,7 @@ define(function (require, exports, module) {
 			var pos = this.$el.position();
 
 			var data = $.extend({
-				'draggable-status': 'enabled',
+				draggableStatus: 'enabled',
 				disabled: false,
 				top: parseFloat(pos.top),
 				left: parseFloat(pos.left)
@@ -57,7 +57,7 @@ define(function (require, exports, module) {
 			model.set(data);
 
 			// listen to enable and disable option changes
-			this.listenTo(model, 'change:draggable-status', function (model) {
+			this.listenTo(model, 'change:draggableStatus', function (model) {
 
 				if (this.draggableEnabled()) {
 					// is enabled
@@ -99,7 +99,7 @@ define(function (require, exports, module) {
 		 * @method disableDraggable
 		 */
 		disableDraggable: function disableDraggable() {
-			this.model.set('draggable-status', 'disabled');
+			this.model.set('draggableStatus', 'disabled');
 		},
 
 		/**
@@ -108,11 +108,11 @@ define(function (require, exports, module) {
 		 * @method enableDraggable
 		 */
 		enableDraggable: function enableDraggable() {
-			this.model.set('draggable-status', 'enabled');
+			this.model.set('draggableStatus', 'enabled');
 		},
 
 		draggableEnabled: function draggableEnabled() {
-			return this.model.get('draggable-status') === 'enabled';
+			return this.model.get('draggableStatus') === 'enabled';
 		},
 
 		axis: 'xy',
