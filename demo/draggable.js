@@ -9,8 +9,6 @@ function (draggable            ,  $      ,  squareModel       ) {
 		map: {
 			left: ['->css:left', '[data-attribute="left"]'],
 			top: ['->css:top', '[data-attribute="top"]'],
-			status: '[data-attribute="status"]',
-			value: '[data-attribute="value"]',
 			'draggableStatus': '[data-attribute="draggableStatus"]',
 		},
 
@@ -38,7 +36,7 @@ function (draggable            ,  $      ,  squareModel       ) {
 		}
 	}, function (draggable) {
 
-		var top = draggable.model.get('top'),
+		var top = draggable.modeld.get('top'),
 			inverse = 255 - top;
 
 		draggable.$el.css('background-color', 'rgb(255,' + parseInt(top, 10) + ',' + parseInt(inverse, 10) + ')');

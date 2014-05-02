@@ -17,7 +17,7 @@ define(function (require, exports, module) {
 				return attemptedDelta;
 			}
 
-			var model = this.model;
+			var modeld = this.modeld;
 
 
 			// get true delta
@@ -28,10 +28,7 @@ define(function (require, exports, module) {
 			delta = _.isNumber(hookRes) ? hookRes : delta
 
 			// set left
-			model.set('left', parseFloat(model.get('left')) + delta);
-
-			// set value attribute
-			model.set(this.valueAttribute, this.toValue(model));
+			modeld.set('left', parseFloat(modeld.get('left')) + delta);
 
 			// events
 			if (!options.silent && delta !== 0) {
@@ -68,7 +65,7 @@ define(function (require, exports, module) {
 				return attemptedDelta;
 			}
 
-			var model = this.model;
+			var modeld = this.modeld;
 
 			// get allowed delta
 			var delta = this.yAllowedDelta(attemptedDelta);
@@ -78,10 +75,7 @@ define(function (require, exports, module) {
 			delta = _.isNumber(hookRes) ? hookRes : delta;
 
 			// set new top
-			model.set('top', parseFloat(model.get('top')) + delta);
-
-			// update value
-			model.set(this.valueAttribute, this.toValue(model));
+			modeld.set('top', parseFloat(modeld.get('top')) + delta);
 
 			// events
 			if (!options.silent && delta !== 0) {

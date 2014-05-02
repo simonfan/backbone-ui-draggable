@@ -68,108 +68,15 @@ define('__backbone-ui-draggable/when',['require','exports','module','object-quer
 	module.exports = function when(criteria, callback, context) {
 
 		var query = objectQuery(criteria),
-			model = this.model;
+			modeld = this.modeld;
 
-		model.on('change', function () {
+		modeld.on('change', function () {
 
-			if (query(model.toJSON())) {
+			if (query(modeld.toJSON())) {
 				// run callback with the draggable as first argument.
 				callback.apply(context, [this]);
 			}
 		}, this);
-	};
-});
-
-define('__backbone-ui-draggable/value-position',['require','exports','module','./helpers'],function (require, exports, module) {
-	
-
-	var helpers = require('./helpers');
-
-	/**
-	 * Runs the initialization logic that is needed for the value-position
-	 * system.
-	 *
-	 * @method initializeDraggableValuePosition
-	 * @param options {Object}
-	 */
-	exports.initializeDraggableValuePosition = function initializeDraggableValuePosition(options) {
-
-
-		// listen to changes on value attribute
-		var model = this.model,
-			valueAttribute = this.valueAttribute;
-
-		this.listenTo(model, 'change:' + valueAttribute, function (model, value) {
-
-			var pos = this.toPosition(model.get(valueAttribute));
-
-			model.set({
-				top: parseFloat(pos.top),
-				left: parseFloat(pos.left)
-			});
-
-		}, this);
-
-		// initialize value/position
-		if (model.get(valueAttribute)) {
-			var pos = this.toPosition(model.get(valueAttribute));
-
-			model.set({
-				top: parseFloat(pos.top),
-				left: parseFloat(pos.left)
-			});
-		} else {
-			model.set(valueAttribute, this.toValue(model));
-		}
-
-	};
-
-	/**
-	 * The name of the attribute to be set as 'value'
-	 *
-	 * @property valueAttribute
-	 * @type String
-	 */
-	exports.valueAttribute = 'value';
-
-	/**
-	 * Sets the 'valueAttribute' attribute on the model.
-	 *
-	 * @method setValue
-	 * @param value *
-	 */
-	exports.setValue = function setValue(value) {
-		this.model.set(this.valueAttribute, value);
-		return this;
-	};
-
-	/**
-	 * Takes the backbone model of the draggalbe item
-	 * and is expected to return a 'value'.
-	 *
-	 * @method toValue
-	 * @param model {BB Model}
-	 */
-	exports.toValue = function toValue(model) {
-		return 'At ' + model.get('top') + ' x ' + model.get('left');
-	};
-
-	/**
-	 * Takes a value and is expected to return a position
-	 * object containg { top: Number, left: Number }
-	 *
-	 * @method toPosition
-	 * @param value
-	 */
-	exports.toPosition = function toPosition(value) {
-		var values = value.split('x');
-
-		var pos =  {
-			top: parseFloat(values[0].replace(/[^0-9.\-]/g, '')),
-			left: parseFloat(values[1].replace(/[^0-9.\-]/g, '')),
-		};
-
-		return pos;
 	};
 });
 
@@ -180,24 +87,34 @@ define('__backbone-ui-draggable/delta-calc',['require','exports','module','lodas
 
 	var h = require('./helpers');
 
+	// just to make it easier..
+	var pf = parseFloat;
+
+	/**
+	 *
+	 * Calculates the maximum delta allowed on x axis.
+	 *
+	 * @param xAllowedDelta
+	 *
+	 */
 	exports.xAllowedDelta = function xAllowedDelta(attemptedDelta) {
 
-		var model = this.model,
-			previousLeft = parseFloat(model.get('left')),
+		var modeld = this.modeld,
+			previousLeft = pf(modeld.get('left')),
 
 			// convert the attemptedDelta into attemptedLeft
-			attemptedLeft = previousLeft + attemptedDelta;
+			attemptedLeft = previousLeft + pf(attemptedDelta);
 
-		var width = parseFloat(this.$el.width());
+		var width = pf(this.$el.width());
 
 		// minimums
-		var minLeft = parseFloat(model.get('minLeft')),
-			minRight = parseFloat(model.get('minRight')),
+		var minLeft = pf(modeld.get('minLeft')),
+			minRight = pf(modeld.get('minRight')),
 			min = h.max(minLeft, minRight - width);
 
 		// maximums
-		var maxLeft = parseFloat(model.get('maxLeft')),
-			maxRight = parseFloat(model.get('maxRight')),
+		var maxLeft = pf(modeld.get('maxLeft')),
+			maxRight = pf(modeld.get('maxRight')),
 			max = h.min(maxLeft, maxRight - width);
 
 			// get the allowed left
@@ -207,24 +124,31 @@ define('__backbone-ui-draggable/delta-calc',['require','exports','module','lodas
 		return left - previousLeft;
 	};
 
+	/**
+	 *
+	 * Calculates the maximum delta allowed on y axis.
+	 *
+	 * @param yAllowedDelta
+	 *
+	 */
 	exports.yAllowedDelta = function yAllowedDelta(attemptedDelta) {
 
-		var model = this.model,
-			previousTop = parseFloat(model.get('top')),
+		var modeld = this.modeld,
+			previousTop = pf(modeld.get('top')),
 
 			// convert the attemptedDelta into attemptedTop
-			attemptedTop = previousTop + attemptedDelta;
+			attemptedTop = previousTop + pf(attemptedDelta);
 
-		var height = parseFloat(this.$el.height());
+		var height = pf(this.$el.height());
 
 		// minimums
-		var minTop = parseFloat(model.get('minTop')),
-			minBottom = parseFloat(model.get('minBottom')),
+		var minTop = pf(modeld.get('minTop')),
+			minBottom = pf(modeld.get('minBottom')),
 			min = h.max(minTop, minBottom - height);
 
 		// maximums
-		var maxTop = parseFloat(model.get('maxTop')),
-			maxBottom = parseFloat(model.get('maxBottom')),
+		var maxTop = pf(modeld.get('maxTop')),
+			maxBottom = pf(modeld.get('maxBottom')),
 			max = h.min(maxTop, maxBottom - height);
 
 			// get the allowed top
@@ -254,7 +178,7 @@ define('__backbone-ui-draggable/movement',['require','exports','module','lodash'
 				return attemptedDelta;
 			}
 
-			var model = this.model;
+			var modeld = this.modeld;
 
 
 			// get true delta
@@ -265,10 +189,7 @@ define('__backbone-ui-draggable/movement',['require','exports','module','lodash'
 			delta = _.isNumber(hookRes) ? hookRes : delta
 
 			// set left
-			model.set('left', parseFloat(model.get('left')) + delta);
-
-			// set value attribute
-			model.set(this.valueAttribute, this.toValue(model));
+			modeld.set('left', parseFloat(modeld.get('left')) + delta);
 
 			// events
 			if (!options.silent && delta !== 0) {
@@ -305,7 +226,7 @@ define('__backbone-ui-draggable/movement',['require','exports','module','lodash'
 				return attemptedDelta;
 			}
 
-			var model = this.model;
+			var modeld = this.modeld;
 
 			// get allowed delta
 			var delta = this.yAllowedDelta(attemptedDelta);
@@ -315,10 +236,7 @@ define('__backbone-ui-draggable/movement',['require','exports','module','lodash'
 			delta = _.isNumber(hookRes) ? hookRes : delta;
 
 			// set new top
-			model.set('top', parseFloat(model.get('top')) + delta);
-
-			// update value
-			model.set(this.valueAttribute, this.toValue(model));
+			modeld.set('top', parseFloat(modeld.get('top')) + delta);
 
 			// events
 			if (!options.silent && delta !== 0) {
@@ -399,7 +317,7 @@ define('__backbone-ui-draggable/animation',['require','exports','module','lodash
 
 		// run animation
 		this.$el.animate({
-			left: parseFloat(this.model.get('left')) + delta
+			left: parseFloat(this.modeld.get('left')) + delta
 		}, options);
 
 		// return remainder
@@ -441,7 +359,7 @@ define('__backbone-ui-draggable/animation',['require','exports','module','lodash
 
 		// run animation
 		this.$el.animate({
-			top: parseFloat(this.model.get('top')) + delta
+			top: parseFloat(this.modeld.get('top')) + delta
 		}, options);
 
 		// return remainder
@@ -547,6 +465,61 @@ define('__backbone-ui-draggable/event-handlers',['require','exports','module'],f
 	};
 });
 
+/**
+ *
+ * @module backbone-ui-draggable
+ * @submodule event-handlers
+ */
+
+define('__backbone-ui-draggable/enable-disable',['require','exports','module'],function (require, exports, module) {
+	
+
+	exports.initializeUIDraggableEnableDisable = function initializeUIDraggableEnableDisable(options) {
+		var modeld = this.modeld;
+
+		// listen to enable and disable option changes
+		this.listenTo(modeld, 'change:draggableStatus', function (model) {
+
+			if (this.draggableEnabled()) {
+				// is enabled
+				this.$el
+					.removeClass(this.draggableClass + '-disabled')
+					.addClass(this.draggableClass + '-enabled');
+			} else {
+				// is disabled
+				this.$el
+					.removeClass(this.draggableClass + '-enabled')
+					.addClass(this.draggableClass + '-disabled');
+			}
+
+		});
+	};
+
+
+
+	/**
+	 * Set the disabled option to true.
+	 *
+	 * @method disableDraggable
+	 */
+	exports.disableDraggable = function disableDraggable() {
+		this.modeld.set('draggableStatus', 'disabled');
+	};
+
+	/**
+	 * Set the disabled option to false.
+	 *
+	 * @method enableDraggable
+	 */
+	exports.enableDraggable = function enableDraggable() {
+		this.modeld.set('draggableStatus', 'enabled');
+	};
+
+	exports.draggableEnabled = function draggableEnabled() {
+		return this.modeld.get('draggableStatus') === 'enabled';
+	};
+});
+
 //     BackboneUiDraggable
 //     (c) simonfan
 //     BackboneUiDraggable is licensed under the MIT terms.
@@ -557,22 +530,22 @@ define('__backbone-ui-draggable/event-handlers',['require','exports','module'],f
  * @module BackboneUiDraggable
  */
 
-define('backbone-ui-draggable',['require','exports','module','lowercase-backbone','model-dock','lodash','jquery','./__backbone-ui-draggable/helpers','./__backbone-ui-draggable/when','./__backbone-ui-draggable/value-position','./__backbone-ui-draggable/delta-calc','./__backbone-ui-draggable/movement','./__backbone-ui-draggable/animation','./__backbone-ui-draggable/event-handlers'],function (require, exports, module) {
+define('backbone-ui-draggable',['require','exports','module','lowercase-backbone','bb-model-view','lodash','jquery','./__backbone-ui-draggable/helpers','./__backbone-ui-draggable/when','./__backbone-ui-draggable/delta-calc','./__backbone-ui-draggable/movement','./__backbone-ui-draggable/animation','./__backbone-ui-draggable/event-handlers','./__backbone-ui-draggable/enable-disable'],function (require, exports, module) {
 	
 
 	var backbone = require('lowercase-backbone'),
-		modelDock = require('model-dock'),
+		modelView = require('bb-model-view'),
 		_ = require('lodash'),
 		$ = require('jquery');
 
 	var helpers = require('./__backbone-ui-draggable/helpers');
 
-	var draggable = module.exports = modelDock.extend({
+	var draggable = module.exports = modelView.extend({
 		initialize: function initialize(options) {
 
 			backbone.view.prototype.initialize.call(this, options);
 
-			this.initializeModelDock(options);
+			this.initializeModelView(options);
 
 			this.initializeUIDraggable(options);
 		},
@@ -591,40 +564,19 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 			// canvas
 			this.$canvas = options.canvas || this.canvas || this.$el.parent();
 
-			var pos = this.$el.position();
+			// enable disable
+			this.initializeUIDraggableEnableDisable();
 
+			// set initial data
+			var pos = this.$el.position();
 			var data = $.extend({
 				draggableStatus: 'enabled',
-				disabled: false,
 				top: parseFloat(pos.top),
 				left: parseFloat(pos.left)
 
 			}, options);
 
-			// set initial data
-			var model = this.model;
-			model.set(data);
-
-			// listen to enable and disable option changes
-			this.listenTo(model, 'change:draggableStatus', function (model) {
-
-				if (this.draggableEnabled()) {
-					// is enabled
-					this.$el
-						.removeClass(this.draggableClass + '-disabled')
-						.addClass(this.draggableClass + '-enabled');
-				} else {
-					// is disabled
-					this.$el
-						.removeClass(this.draggableClass + '-enabled')
-						.addClass(this.draggableClass + '-disabled');
-				}
-
-			});
-
-
-			// initialize value-position system.
-			this.initializeDraggableValuePosition(options);
+			this.modeld.set(data);
 		},
 
 		/**
@@ -642,28 +594,6 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 
 		when: require('./__backbone-ui-draggable/when'),
 
-		/**
-		 * Set the disabled option to true.
-		 *
-		 * @method disableDraggable
-		 */
-		disableDraggable: function disableDraggable() {
-			this.model.set('draggableStatus', 'disabled');
-		},
-
-		/**
-		 * Set the disabled option to false.
-		 *
-		 * @method enableDraggable
-		 */
-		enableDraggable: function enableDraggable() {
-			this.model.set('draggableStatus', 'enabled');
-		},
-
-		draggableEnabled: function draggableEnabled() {
-			return this.model.get('draggableStatus') === 'enabled';
-		},
-
 		axis: 'xy',
 
 		map: {
@@ -678,10 +608,11 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 	});
 
 	// extend
-	draggable.proto(require('./__backbone-ui-draggable/value-position'));
-	draggable.proto(require('./__backbone-ui-draggable/delta-calc'));
-	draggable.proto(require('./__backbone-ui-draggable/movement'));
-	draggable.proto(require('./__backbone-ui-draggable/animation'));
-	draggable.proto(require('./__backbone-ui-draggable/event-handlers'));
+	draggable
+		.proto(require('./__backbone-ui-draggable/delta-calc'))
+		.proto(require('./__backbone-ui-draggable/movement'))
+		.proto(require('./__backbone-ui-draggable/animation'))
+		.proto(require('./__backbone-ui-draggable/event-handlers'))
+		.proto(require('./__backbone-ui-draggable/enable-disable'))
 });
 

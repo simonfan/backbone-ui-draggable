@@ -15,11 +15,11 @@ define(function (require, exports, module) {
 	module.exports = function when(criteria, callback, context) {
 
 		var query = objectQuery(criteria),
-			model = this.model;
+			modeld = this.modeld;
 
-		model.on('change', function () {
+		modeld.on('change', function () {
 
-			if (query(model.toJSON())) {
+			if (query(modeld.toJSON())) {
 				// run callback with the draggable as first argument.
 				callback.apply(context, [this]);
 			}

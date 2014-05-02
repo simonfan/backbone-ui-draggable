@@ -5,24 +5,34 @@ define(function (require, exports, module) {
 
 	var h = require('./helpers');
 
+	// just to make it easier..
+	var pf = parseFloat;
+
+	/**
+	 *
+	 * Calculates the maximum delta allowed on x axis.
+	 *
+	 * @param xAllowedDelta
+	 *
+	 */
 	exports.xAllowedDelta = function xAllowedDelta(attemptedDelta) {
 
-		var model = this.model,
-			previousLeft = parseFloat(model.get('left')),
+		var modeld = this.modeld,
+			previousLeft = pf(modeld.get('left')),
 
 			// convert the attemptedDelta into attemptedLeft
-			attemptedLeft = previousLeft + attemptedDelta;
+			attemptedLeft = previousLeft + pf(attemptedDelta);
 
-		var width = parseFloat(this.$el.width());
+		var width = pf(this.$el.width());
 
 		// minimums
-		var minLeft = parseFloat(model.get('minLeft')),
-			minRight = parseFloat(model.get('minRight')),
+		var minLeft = pf(modeld.get('minLeft')),
+			minRight = pf(modeld.get('minRight')),
 			min = h.max(minLeft, minRight - width);
 
 		// maximums
-		var maxLeft = parseFloat(model.get('maxLeft')),
-			maxRight = parseFloat(model.get('maxRight')),
+		var maxLeft = pf(modeld.get('maxLeft')),
+			maxRight = pf(modeld.get('maxRight')),
 			max = h.min(maxLeft, maxRight - width);
 
 			// get the allowed left
@@ -32,24 +42,31 @@ define(function (require, exports, module) {
 		return left - previousLeft;
 	};
 
+	/**
+	 *
+	 * Calculates the maximum delta allowed on y axis.
+	 *
+	 * @param yAllowedDelta
+	 *
+	 */
 	exports.yAllowedDelta = function yAllowedDelta(attemptedDelta) {
 
-		var model = this.model,
-			previousTop = parseFloat(model.get('top')),
+		var modeld = this.modeld,
+			previousTop = pf(modeld.get('top')),
 
 			// convert the attemptedDelta into attemptedTop
-			attemptedTop = previousTop + attemptedDelta;
+			attemptedTop = previousTop + pf(attemptedDelta);
 
-		var height = parseFloat(this.$el.height());
+		var height = pf(this.$el.height());
 
 		// minimums
-		var minTop = parseFloat(model.get('minTop')),
-			minBottom = parseFloat(model.get('minBottom')),
+		var minTop = pf(modeld.get('minTop')),
+			minBottom = pf(modeld.get('minBottom')),
 			min = h.max(minTop, minBottom - height);
 
 		// maximums
-		var maxTop = parseFloat(model.get('maxTop')),
-			maxBottom = parseFloat(model.get('maxBottom')),
+		var maxTop = pf(modeld.get('maxTop')),
+			maxBottom = pf(modeld.get('maxBottom')),
 			max = h.min(maxTop, maxBottom - height);
 
 			// get the allowed top

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/__backbone-ui-draggable/value-position.js - backbone-ui-draggable</title>
+    <title>src/__backbone-ui-draggable/enable-disable.js - backbone-ui-draggable</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -86,100 +86,62 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: src/__backbone-ui-draggable/value-position.js</h1>
+                        <h1 class="file-heading">File: src/__backbone-ui-draggable/enable-disable.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
+/**
+ *
+ * @module backbone-ui-draggable
+ * @submodule event-handlers
+ */
+
 define(function (require, exports, module) {
 	&#x27;use strict&#x27;;
 
-	var helpers = require(&#x27;./helpers&#x27;);
+	exports.initializeUIDraggableEnableDisable = function initializeUIDraggableEnableDisable(options) {
+		var modeld = this.modeld;
+
+		// listen to enable and disable option changes
+		this.listenTo(modeld, &#x27;change:draggableStatus&#x27;, function (model) {
+
+			if (this.draggableEnabled()) {
+				// is enabled
+				this.$el
+					.removeClass(this.draggableClass + &#x27;-disabled&#x27;)
+					.addClass(this.draggableClass + &#x27;-enabled&#x27;);
+			} else {
+				// is disabled
+				this.$el
+					.removeClass(this.draggableClass + &#x27;-enabled&#x27;)
+					.addClass(this.draggableClass + &#x27;-disabled&#x27;);
+			}
+
+		});
+	};
+
+
 
 	/**
-	 * Runs the initialization logic that is needed for the value-position
-	 * system.
+	 * Set the disabled option to true.
 	 *
-	 * @method initializeDraggableValuePosition
-	 * @param options {Object}
+	 * @method disableDraggable
 	 */
-	exports.initializeDraggableValuePosition = function initializeDraggableValuePosition(options) {
-
-
-		// listen to changes on value attribute
-		var model = this.model,
-			valueAttribute = this.valueAttribute;
-
-		this.listenTo(model, &#x27;change:&#x27; + valueAttribute, function (model, value) {
-
-			var pos = this.toPosition(model.get(valueAttribute));
-
-			model.set({
-				top: parseFloat(pos.top),
-				left: parseFloat(pos.left)
-			});
-
-		}, this);
-
-		// initialize value/position
-		if (model.get(valueAttribute)) {
-			var pos = this.toPosition(model.get(valueAttribute));
-
-			model.set({
-				top: parseFloat(pos.top),
-				left: parseFloat(pos.left)
-			});
-		} else {
-			model.set(valueAttribute, this.toValue(model));
-		}
-
+	exports.disableDraggable = function disableDraggable() {
+		this.modeld.set(&#x27;draggableStatus&#x27;, &#x27;disabled&#x27;);
 	};
 
 	/**
-	 * The name of the attribute to be set as &#x27;value&#x27;
+	 * Set the disabled option to false.
 	 *
-	 * @property valueAttribute
-	 * @type String
+	 * @method enableDraggable
 	 */
-	exports.valueAttribute = &#x27;value&#x27;;
-
-	/**
-	 * Sets the &#x27;valueAttribute&#x27; attribute on the model.
-	 *
-	 * @method setValue
-	 * @param value *
-	 */
-	exports.setValue = function setValue(value) {
-		this.model.set(this.valueAttribute, value);
-		return this;
+	exports.enableDraggable = function enableDraggable() {
+		this.modeld.set(&#x27;draggableStatus&#x27;, &#x27;enabled&#x27;);
 	};
 
-	/**
-	 * Takes the backbone model of the draggalbe item
-	 * and is expected to return a &#x27;value&#x27;.
-	 *
-	 * @method toValue
-	 * @param model {BB Model}
-	 */
-	exports.toValue = function toValue(model) {
-		return &#x27;At &#x27; + model.get(&#x27;top&#x27;) + &#x27; x &#x27; + model.get(&#x27;left&#x27;);
-	};
-
-	/**
-	 * Takes a value and is expected to return a position
-	 * object containg { top: Number, left: Number }
-	 *
-	 * @method toPosition
-	 * @param value
-	 */
-	exports.toPosition = function toPosition(value) {
-		var values = value.split(&#x27;x&#x27;);
-
-		var pos =  {
-			top: parseFloat(values[0].replace(/[^0-9.\-]/g, &#x27;&#x27;)),
-			left: parseFloat(values[1].replace(/[^0-9.\-]/g, &#x27;&#x27;)),
-		};
-
-		return pos;
+	exports.draggableEnabled = function draggableEnabled() {
+		return this.modeld.get(&#x27;draggableStatus&#x27;) === &#x27;enabled&#x27;;
 	};
 });
 

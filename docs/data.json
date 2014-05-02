@@ -11,8 +11,15 @@
             "fors": {},
             "namespaces": {}
         },
-        "src/__backbone-ui-draggable/event-handlers.js": {
-            "name": "src/__backbone-ui-draggable/event-handlers.js",
+        "src/__backbone-ui-draggable/delta-calc.js": {
+            "name": "src/__backbone-ui-draggable/delta-calc.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/__backbone-ui-draggable/enable-disable.js": {
+            "name": "src/__backbone-ui-draggable/enable-disable.js",
             "modules": {
                 "event-handlers": 1
             },
@@ -20,15 +27,15 @@
             "fors": {},
             "namespaces": {}
         },
-        "src/__backbone-ui-draggable/helpers.js": {
-            "name": "src/__backbone-ui-draggable/helpers.js",
+        "src/__backbone-ui-draggable/event-handlers.js": {
+            "name": "src/__backbone-ui-draggable/event-handlers.js",
             "modules": {},
             "classes": {},
             "fors": {},
             "namespaces": {}
         },
-        "src/__backbone-ui-draggable/value-position.js": {
-            "name": "src/__backbone-ui-draggable/value-position.js",
+        "src/__backbone-ui-draggable/helpers.js": {
+            "name": "src/__backbone-ui-draggable/helpers.js",
             "modules": {},
             "classes": {},
             "fors": {},
@@ -70,7 +77,7 @@
             "namespaces": {},
             "module": "backbone-ui-draggable",
             "namespace": "",
-            "file": "src/__backbone-ui-draggable/event-handlers.js",
+            "file": "src/__backbone-ui-draggable/enable-disable.js",
             "line": 1
         },
         "BackboneUiDraggable": {
@@ -118,6 +125,50 @@
             "class": ""
         },
         {
+            "file": "src/__backbone-ui-draggable/delta-calc.js",
+            "line": 11,
+            "description": "Calculates the maximum delta allowed on x axis.",
+            "params": [
+                {
+                    "name": "xAllowedDelta",
+                    "description": ""
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "src/__backbone-ui-draggable/delta-calc.js",
+            "line": 45,
+            "description": "Calculates the maximum delta allowed on y axis.",
+            "params": [
+                {
+                    "name": "yAllowedDelta",
+                    "description": ""
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "src/__backbone-ui-draggable/enable-disable.js",
+            "line": 33,
+            "description": "Set the disabled option to true.",
+            "itemtype": "method",
+            "name": "disableDraggable",
+            "class": "",
+            "module": "backbone-ui-draggable",
+            "submodule": "event-handlers"
+        },
+        {
+            "file": "src/__backbone-ui-draggable/enable-disable.js",
+            "line": 42,
+            "description": "Set the disabled option to false.",
+            "itemtype": "method",
+            "name": "enableDraggable",
+            "class": "",
+            "module": "backbone-ui-draggable",
+            "submodule": "event-handlers"
+        },
+        {
             "file": "src/__backbone-ui-draggable/helpers.js",
             "line": 40,
             "description": "Just adds 'px' string to numerical values.",
@@ -125,78 +176,6 @@
             "name": "stringifyPositionalValue",
             "access": "private",
             "tagname": "",
-            "class": "",
-            "module": "backbone-ui-draggable"
-        },
-        {
-            "file": "src/__backbone-ui-draggable/value-position.js",
-            "line": 6,
-            "description": "Runs the initialization logic that is needed for the value-position\nsystem.",
-            "itemtype": "method",
-            "name": "initializeDraggableValuePosition",
-            "params": [
-                {
-                    "name": "options",
-                    "description": "",
-                    "type": "Object"
-                }
-            ],
-            "class": "",
-            "module": "backbone-ui-draggable"
-        },
-        {
-            "file": "src/__backbone-ui-draggable/value-position.js",
-            "line": 45,
-            "description": "The name of the attribute to be set as 'value'",
-            "itemtype": "property",
-            "name": "valueAttribute",
-            "type": "String",
-            "class": "",
-            "module": "backbone-ui-draggable"
-        },
-        {
-            "file": "src/__backbone-ui-draggable/value-position.js",
-            "line": 53,
-            "description": "Sets the 'valueAttribute' attribute on the model.",
-            "itemtype": "method",
-            "name": "setValue",
-            "params": [
-                {
-                    "name": "value",
-                    "description": "*"
-                }
-            ],
-            "class": "",
-            "module": "backbone-ui-draggable"
-        },
-        {
-            "file": "src/__backbone-ui-draggable/value-position.js",
-            "line": 64,
-            "description": "Takes the backbone model of the draggalbe item\nand is expected to return a 'value'.",
-            "itemtype": "method",
-            "name": "toValue",
-            "params": [
-                {
-                    "name": "model",
-                    "description": "",
-                    "type": "BB Model"
-                }
-            ],
-            "class": "",
-            "module": "backbone-ui-draggable"
-        },
-        {
-            "file": "src/__backbone-ui-draggable/value-position.js",
-            "line": 75,
-            "description": "Takes a value and is expected to return a position\nobject containg { top: Number, left: Number }",
-            "itemtype": "method",
-            "name": "toPosition",
-            "params": [
-                {
-                    "name": "value",
-                    "description": ""
-                }
-            ],
             "class": "",
             "module": "backbone-ui-draggable"
         },
@@ -229,32 +208,23 @@
         },
         {
             "file": "src/index.js",
-            "line": 81,
+            "line": 60,
             "description": "The class to be added to the draggable html eleemnt.",
             "itemtype": "property",
             "name": "draggableClass",
             "type": "String",
             "class": "",
             "module": "BackboneUiDraggable"
-        },
-        {
-            "file": "src/index.js",
-            "line": 96,
-            "description": "Set the disabled option to true.",
-            "itemtype": "method",
-            "name": "disableDraggable",
-            "class": "",
-            "module": "BackboneUiDraggable"
-        },
-        {
-            "file": "src/index.js",
-            "line": 105,
-            "description": "Set the disabled option to false.",
-            "itemtype": "method",
-            "name": "enableDraggable",
-            "class": "",
-            "module": "BackboneUiDraggable"
         }
     ],
-    "warnings": []
+    "warnings": [
+        {
+            "message": "Missing item type\nCalculates the maximum delta allowed on x axis.",
+            "line": " src/__backbone-ui-draggable/delta-calc.js:11"
+        },
+        {
+            "message": "Missing item type\nCalculates the maximum delta allowed on y axis.",
+            "line": " src/__backbone-ui-draggable/delta-calc.js:45"
+        }
+    ]
 }

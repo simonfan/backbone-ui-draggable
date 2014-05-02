@@ -11,10 +11,20 @@ function (draggable            ,  $      ,  backbone           ,  squareModel   
 
 				var proxiedAttribute = options.proxiedAttribute;
 
-				this.model.on('change:value change:enable', function (model) {
+				// whnever there is a movement,
+				// change value
+				this.on('move', this.handleMove, this);
+
+
+				// whenever value is changed,
+				// set it to a position
+				this.modeld.on('change:value change:enable', function (model) {
+					// set to position
+					var position = this.toPosition(model.get('value'));
+					this.modeld.set(position);
+
 					// set the proxied value
 					// onto the squareModel!
-
 					if (_.contains(model.get('enable'), 'enable')) {
 						squareModel.set(proxiedAttribute, model.get('value'));
 					} else {
@@ -33,11 +43,18 @@ function (draggable            ,  $      ,  backbone           ,  squareModel   
 
 
 					// enable
-					this.model.set('enable', ['enable']);
-					this.setValue(initialValue);
+					this.modeld.set('enable', ['enable']);
+					this.modeld.set('value', initialValue);
 				}
 			},
 
+			handleMove: function handleMove() {
+
+				var value = this.toValue(this.modeld);
+
+				this.modeld.set('value', value);
+
+			},
 
 
 			map: {

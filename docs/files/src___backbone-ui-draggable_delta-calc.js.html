@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/__backbone-ui-draggable/animation.js - backbone-ui-draggable</title>
+    <title>src/__backbone-ui-draggable/delta-calc.js - backbone-ui-draggable</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -86,7 +86,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: src/__backbone-ui-draggable/animation.js</h1>
+                        <h1 class="file-heading">File: src/__backbone-ui-draggable/delta-calc.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
@@ -95,105 +95,77 @@ define(function (require, exports, module) {
 
 	var _ = require(&#x27;lodash&#x27;);
 
+	var h = require(&#x27;./helpers&#x27;);
+
+	// just to make it easier..
+	var pf = parseFloat;
+
 	/**
-	 * The same as moveX, but with animation.
 	 *
-	 * @method animateX
-	 * @param attemptedDelta {Number}
+	 * Calculates the maximum delta allowed on x axis.
+	 *
+	 * @param xAllowedDelta
+	 *
 	 */
-	exports.animateX = function animateX(attemptedDelta, options) {
+	exports.xAllowedDelta = function xAllowedDelta(attemptedDelta) {
 
-		var delta = this.xAllowedDelta(attemptedDelta);
+		var modeld = this.modeld,
+			previousLeft = pf(modeld.get(&#x27;left&#x27;)),
 
-		// [2] set up options
-		options = options || {};
-		// jquery animate has two interfaces.. we should support them both.
-		options = _.isObject(options) ? options : {
-			duration: arguments[1],
-			easing: arguments[2],
-			complete: arguments[3]
-		};
+			// convert the attemptedDelta into attemptedLeft
+			attemptedLeft = previousLeft + pf(attemptedDelta);
 
+		var width = pf(this.$el.width());
 
-		// [4] get current position
-		var lastLeft = this.$el.position().left;
+		// minimums
+		var minLeft = pf(modeld.get(&#x27;minLeft&#x27;)),
+			minRight = pf(modeld.get(&#x27;minRight&#x27;)),
+			min = h.max(minLeft, minRight - width);
 
-		// [5] set new progress function
-		options.step = _.bind(function (now, tween) {
+		// maximums
+		var maxLeft = pf(modeld.get(&#x27;maxLeft&#x27;)),
+			maxRight = pf(modeld.get(&#x27;maxRight&#x27;)),
+			max = h.min(maxLeft, maxRight - width);
 
-			// &#x27;this&#x27; refers to the draggable object
-			this.moveX(now - lastLeft, { force: true });
+			// get the allowed left
+		var left = h.fitValueWithin(attemptedLeft, min, max);
 
-			// change lastLeft
-			lastLeft = now;
-
-		}, this);
-
-		// run animation
-		this.$el.animate({
-			left: parseFloat(this.modeld.get(&#x27;left&#x27;)) + delta
-		}, options);
-
-		// return remainder
-		return attemptedDelta - delta;
+			// return the allowed delta
+		return left - previousLeft;
 	};
 
 	/**
-	 * The same as moveY, but with animation.
 	 *
-	 * @method animateY
-	 * @param attemptedDelta {Number}
+	 * Calculates the maximum delta allowed on y axis.
+	 *
+	 * @param yAllowedDelta
+	 *
 	 */
-	exports.animateY = function animateY(attemptedDelta, options) {
-		var delta = this.yAllowedDelta(attemptedDelta);
+	exports.yAllowedDelta = function yAllowedDelta(attemptedDelta) {
 
-		// [2] set up options
-		options = options || {};
-		// jquery animate has two interfaces.. we should support them both.
-		options = _.isObject(options) ? options : {
-			duration: arguments[1],
-			easing: arguments[2],
-			complete: arguments[3]
-		};
+		var modeld = this.modeld,
+			previousTop = pf(modeld.get(&#x27;top&#x27;)),
 
+			// convert the attemptedDelta into attemptedTop
+			attemptedTop = previousTop + pf(attemptedDelta);
 
-		// [4] get current position
-		var lastTop = this.$el.position().top;
+		var height = pf(this.$el.height());
 
-		// [5] set new progress function
-		options.step = _.bind(function (now, tween) {
+		// minimums
+		var minTop = pf(modeld.get(&#x27;minTop&#x27;)),
+			minBottom = pf(modeld.get(&#x27;minBottom&#x27;)),
+			min = h.max(minTop, minBottom - height);
 
-			// &#x27;this&#x27; refers to the draggable object
-			this.moveY(now - lastTop, { force: true });
+		// maximums
+		var maxTop = pf(modeld.get(&#x27;maxTop&#x27;)),
+			maxBottom = pf(modeld.get(&#x27;maxBottom&#x27;)),
+			max = h.min(maxTop, maxBottom - height);
 
-			// change lastTop
-			lastTop = now;
+			// get the allowed top
+		var top = h.fitValueWithin(attemptedTop, min, max);
 
-		}, this);
-
-		// run animation
-		this.$el.animate({
-			top: parseFloat(this.modeld.get(&#x27;top&#x27;)) + delta
-		}, options);
-
-		// return remainder
-		return attemptedDelta - delta;
-	};
-
-	exports.animateToLeft = function animateToLeft(attemptedDelta, silent) {
-		return -1 * this.animateX(-1 * attemptedDelta, silent);
-	};
-
-	exports.animateToRight = function animateToRight(attemptedDelta, silent) {
-		return this.animateX(attemptedDelta, silent);
-	};
-
-	exports.animateToTop = function animateToTop(attemptedDelta, silent) {
-		return -1 * this.animateY(-1 * attemptedDelta, silent);
-	};
-
-	exports.animateToBottom = function animateToBottom(attemptedDelta, silent) {
-		return this.animateY(attemptedDelta, silent);
+		// return allowed delta
+		return top - previousTop;
 	};
 });
 

@@ -1,6 +1,6 @@
-define(['jquery', 'jquery-ui', './limits.js', './draggable.js', 'model-dock'],
+define(['jquery', 'jquery-ui', './limits.js', './draggable.js', 'bb-model-view'],
 
-function ($     ,  undefined  , limits      ,  d              , modelDock   ) {
+function ($     ,  undefined  , limits      ,  d              , modelView   ) {
 
 
 
@@ -28,13 +28,13 @@ function ($     ,  undefined  , limits      ,  d              , modelDock   ) {
 	// draggable event display
 
 
-	var eventDisplay = modelDock.extend({
+	var eventDisplay = modelView.extend({
 		initialize: function initialize(options) {
-			modelDock.prototype.initialize.call(this, options);
+			modelView.prototype.initialize.call(this, options);
 
 			this.listenTo(options.draggable, 'move', function (draggable, eventData) {
 
-				this.model.set(eventData);
+				this.modeld.set(eventData);
 
 			}, this);
 		},
