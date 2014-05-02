@@ -3,9 +3,8 @@ define(['backbone-ui-draggable', 'jquery', './square-model.js'],
 function (draggable            ,  $      ,  squareModel       ) {
 
 
-	// the draggable objet
-	var d = window.d = draggable({
-		el: $('#draggable'),
+	var dragg = draggable.extend({
+
 
 		map: {
 			left: ['->css:left', '[data-attribute="left"]'],
@@ -14,6 +13,14 @@ function (draggable            ,  $      ,  squareModel       ) {
 			value: '[data-attribute="value"]',
 			'draggableStatus': '[data-attribute="draggableStatus"]',
 		},
+
+		beforeMoveY: function (delta) {}
+	});
+
+
+	// the draggable objet
+	var d = window.d = dragg({
+		el: $('#draggable'),
 
 		model: squareModel
 	});
