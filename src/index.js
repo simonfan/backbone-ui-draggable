@@ -49,8 +49,8 @@ define(function (require, exports, module) {
 			var pos = this.$el.position();
 			var data = $.extend({
 				draggableStatus: 'enabled',
-				top: parseFloat(pos.top),
-				left: parseFloat(pos.left)
+				top: +pos.top,
+				left: +pos.left
 
 			}, options);
 

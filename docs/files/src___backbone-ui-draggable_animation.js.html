@@ -131,7 +131,7 @@ define(function (require, exports, module) {
 
 		// run animation
 		this.$el.animate({
-			left: parseFloat(this.modeld.get(&#x27;left&#x27;)) + delta
+			left: +this.modeld.get(&#x27;left&#x27;) + delta
 		}, options);
 
 		// return remainder
@@ -173,7 +173,7 @@ define(function (require, exports, module) {
 
 		// run animation
 		this.$el.animate({
-			top: parseFloat(this.modeld.get(&#x27;top&#x27;)) + delta
+			top: +this.modeld.get(&#x27;top&#x27;) + delta
 		}, options);
 
 		// return remainder

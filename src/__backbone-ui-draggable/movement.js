@@ -28,7 +28,8 @@ define(function (require, exports, module) {
 			delta = _.isNumber(hookRes) ? hookRes : delta
 
 			// set left
-			modeld.set('left', parseFloat(modeld.get('left')) + delta);
+			var left = +modeld.get('left');
+			modeld.set('left', left + delta);
 
 			// events
 			if (!options.silent && delta !== 0) {
@@ -75,7 +76,8 @@ define(function (require, exports, module) {
 			delta = _.isNumber(hookRes) ? hookRes : delta;
 
 			// set new top
-			modeld.set('top', parseFloat(modeld.get('top')) + delta);
+			var top = +modeld.get('top');
+			modeld.set('top', top + delta);
 
 			// events
 			if (!options.silent && delta !== 0) {

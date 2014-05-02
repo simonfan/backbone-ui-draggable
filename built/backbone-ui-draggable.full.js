@@ -87,9 +87,6 @@ define('__backbone-ui-draggable/delta-calc',['require','exports','module','lodas
 
 	var h = require('./helpers');
 
-	// just to make it easier..
-	var pf = parseFloat;
-
 	/**
 	 *
 	 * Calculates the maximum delta allowed on x axis.
@@ -99,22 +96,24 @@ define('__backbone-ui-draggable/delta-calc',['require','exports','module','lodas
 	 */
 	exports.xAllowedDelta = function xAllowedDelta(attemptedDelta) {
 
+		attemptedDelta = +attemptedDelta;
+
 		var modeld = this.modeld,
-			previousLeft = pf(modeld.get('left')),
+			previousLeft = +modeld.get('left'),
 
 			// convert the attemptedDelta into attemptedLeft
-			attemptedLeft = previousLeft + pf(attemptedDelta);
+			attemptedLeft = previousLeft + attemptedDelta;
 
-		var width = pf(this.$el.width());
+		var width = +this.$el.width();
 
 		// minimums
-		var minLeft = pf(modeld.get('minLeft')),
-			minRight = pf(modeld.get('minRight')),
+		var minLeft = +modeld.get('minLeft'),
+			minRight = +modeld.get('minRight'),
 			min = h.max(minLeft, minRight - width);
 
 		// maximums
-		var maxLeft = pf(modeld.get('maxLeft')),
-			maxRight = pf(modeld.get('maxRight')),
+		var maxLeft = +modeld.get('maxLeft'),
+			maxRight = +modeld.get('maxRight'),
 			max = h.min(maxLeft, maxRight - width);
 
 			// get the allowed left
@@ -133,22 +132,24 @@ define('__backbone-ui-draggable/delta-calc',['require','exports','module','lodas
 	 */
 	exports.yAllowedDelta = function yAllowedDelta(attemptedDelta) {
 
+		attemptedDelta = +attemptedDelta;
+
 		var modeld = this.modeld,
-			previousTop = pf(modeld.get('top')),
+			previousTop = +modeld.get('top'),
 
 			// convert the attemptedDelta into attemptedTop
-			attemptedTop = previousTop + pf(attemptedDelta);
+			attemptedTop = previousTop + attemptedDelta;
 
-		var height = pf(this.$el.height());
+		var height = +this.$el.height();
 
 		// minimums
-		var minTop = pf(modeld.get('minTop')),
-			minBottom = pf(modeld.get('minBottom')),
+		var minTop = +modeld.get('minTop'),
+			minBottom = +modeld.get('minBottom'),
 			min = h.max(minTop, minBottom - height);
 
 		// maximums
-		var maxTop = pf(modeld.get('maxTop')),
-			maxBottom = pf(modeld.get('maxBottom')),
+		var maxTop = +modeld.get('maxTop'),
+			maxBottom = +modeld.get('maxBottom'),
 			max = h.min(maxTop, maxBottom - height);
 
 			// get the allowed top
@@ -189,7 +190,8 @@ define('__backbone-ui-draggable/movement',['require','exports','module','lodash'
 			delta = _.isNumber(hookRes) ? hookRes : delta
 
 			// set left
-			modeld.set('left', parseFloat(modeld.get('left')) + delta);
+			var left = +modeld.get('left');
+			modeld.set('left', left + delta);
 
 			// events
 			if (!options.silent && delta !== 0) {
@@ -236,7 +238,8 @@ define('__backbone-ui-draggable/movement',['require','exports','module','lodash'
 			delta = _.isNumber(hookRes) ? hookRes : delta;
 
 			// set new top
-			modeld.set('top', parseFloat(modeld.get('top')) + delta);
+			var top = +modeld.get('top');
+			modeld.set('top', top + delta);
 
 			// events
 			if (!options.silent && delta !== 0) {
@@ -317,7 +320,7 @@ define('__backbone-ui-draggable/animation',['require','exports','module','lodash
 
 		// run animation
 		this.$el.animate({
-			left: parseFloat(this.modeld.get('left')) + delta
+			left: +this.modeld.get('left') + delta
 		}, options);
 
 		// return remainder
@@ -359,7 +362,7 @@ define('__backbone-ui-draggable/animation',['require','exports','module','lodash
 
 		// run animation
 		this.$el.animate({
-			top: parseFloat(this.modeld.get('top')) + delta
+			top: +this.modeld.get('top') + delta
 		}, options);
 
 		// return remainder
@@ -571,8 +574,8 @@ define('backbone-ui-draggable',['require','exports','module','lowercase-backbone
 			var pos = this.$el.position();
 			var data = $.extend({
 				draggableStatus: 'enabled',
-				top: parseFloat(pos.top),
-				left: parseFloat(pos.left)
+				top: +pos.top,
+				left: +pos.left
 
 			}, options);
 

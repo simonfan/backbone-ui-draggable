@@ -97,9 +97,6 @@ define(function (require, exports, module) {
 
 	var h = require(&#x27;./helpers&#x27;);
 
-	// just to make it easier..
-	var pf = parseFloat;
-
 	/**
 	 *
 	 * Calculates the maximum delta allowed on x axis.
@@ -109,22 +106,24 @@ define(function (require, exports, module) {
 	 */
 	exports.xAllowedDelta = function xAllowedDelta(attemptedDelta) {
 
+		attemptedDelta = +attemptedDelta;
+
 		var modeld = this.modeld,
-			previousLeft = pf(modeld.get(&#x27;left&#x27;)),
+			previousLeft = +modeld.get(&#x27;left&#x27;),
 
 			// convert the attemptedDelta into attemptedLeft
-			attemptedLeft = previousLeft + pf(attemptedDelta);
+			attemptedLeft = previousLeft + attemptedDelta;
 
-		var width = pf(this.$el.width());
+		var width = +this.$el.width();
 
 		// minimums
-		var minLeft = pf(modeld.get(&#x27;minLeft&#x27;)),
-			minRight = pf(modeld.get(&#x27;minRight&#x27;)),
+		var minLeft = +modeld.get(&#x27;minLeft&#x27;),
+			minRight = +modeld.get(&#x27;minRight&#x27;),
 			min = h.max(minLeft, minRight - width);
 
 		// maximums
-		var maxLeft = pf(modeld.get(&#x27;maxLeft&#x27;)),
-			maxRight = pf(modeld.get(&#x27;maxRight&#x27;)),
+		var maxLeft = +modeld.get(&#x27;maxLeft&#x27;),
+			maxRight = +modeld.get(&#x27;maxRight&#x27;),
 			max = h.min(maxLeft, maxRight - width);
 
 			// get the allowed left
@@ -143,22 +142,24 @@ define(function (require, exports, module) {
 	 */
 	exports.yAllowedDelta = function yAllowedDelta(attemptedDelta) {
 
+		attemptedDelta = +attemptedDelta;
+
 		var modeld = this.modeld,
-			previousTop = pf(modeld.get(&#x27;top&#x27;)),
+			previousTop = +modeld.get(&#x27;top&#x27;),
 
 			// convert the attemptedDelta into attemptedTop
-			attemptedTop = previousTop + pf(attemptedDelta);
+			attemptedTop = previousTop + attemptedDelta;
 
-		var height = pf(this.$el.height());
+		var height = +this.$el.height();
 
 		// minimums
-		var minTop = pf(modeld.get(&#x27;minTop&#x27;)),
-			minBottom = pf(modeld.get(&#x27;minBottom&#x27;)),
+		var minTop = +modeld.get(&#x27;minTop&#x27;),
+			minBottom = +modeld.get(&#x27;minBottom&#x27;),
 			min = h.max(minTop, minBottom - height);
 
 		// maximums
-		var maxTop = pf(modeld.get(&#x27;maxTop&#x27;)),
-			maxBottom = pf(modeld.get(&#x27;maxBottom&#x27;)),
+		var maxTop = +modeld.get(&#x27;maxTop&#x27;),
+			maxBottom = +modeld.get(&#x27;maxBottom&#x27;),
 			max = h.min(maxTop, maxBottom - height);
 
 			// get the allowed top

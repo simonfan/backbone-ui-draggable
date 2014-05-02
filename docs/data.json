@@ -126,7 +126,7 @@
         },
         {
             "file": "src/__backbone-ui-draggable/delta-calc.js",
-            "line": 11,
+            "line": 8,
             "description": "Calculates the maximum delta allowed on x axis.",
             "params": [
                 {
@@ -138,7 +138,7 @@
         },
         {
             "file": "src/__backbone-ui-draggable/delta-calc.js",
-            "line": 45,
+            "line": 44,
             "description": "Calculates the maximum delta allowed on y axis.",
             "params": [
                 {
@@ -220,11 +220,11 @@
     "warnings": [
         {
             "message": "Missing item type\nCalculates the maximum delta allowed on x axis.",
-            "line": " src/__backbone-ui-draggable/delta-calc.js:11"
+            "line": " src/__backbone-ui-draggable/delta-calc.js:8"
         },
         {
             "message": "Missing item type\nCalculates the maximum delta allowed on y axis.",
-            "line": " src/__backbone-ui-draggable/delta-calc.js:45"
+            "line": " src/__backbone-ui-draggable/delta-calc.js:44"
         }
     ]
 }
