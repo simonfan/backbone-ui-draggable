@@ -100,10 +100,10 @@ define(function (require, exports, module) {
 	&#x27;use strict&#x27;;
 
 	exports.initializeUIDraggableEnableDisable = function initializeUIDraggableEnableDisable(options) {
-		var modeld = this.modeld;
+		var model = this.model;
 
 		// listen to enable and disable option changes
-		this.listenTo(modeld, &#x27;change:draggableStatus&#x27;, function (model) {
+		this.listenTo(model, &#x27;change:draggableStatus&#x27;, function (model) {
 
 			if (this.draggableEnabled()) {
 				// is enabled
@@ -128,7 +128,7 @@ define(function (require, exports, module) {
 	 * @method disableDraggable
 	 */
 	exports.disableDraggable = function disableDraggable() {
-		this.modeld.set(&#x27;draggableStatus&#x27;, &#x27;disabled&#x27;);
+		this.model.set(&#x27;draggableStatus&#x27;, &#x27;disabled&#x27;);
 	};
 
 	/**
@@ -137,11 +137,11 @@ define(function (require, exports, module) {
 	 * @method enableDraggable
 	 */
 	exports.enableDraggable = function enableDraggable() {
-		this.modeld.set(&#x27;draggableStatus&#x27;, &#x27;enabled&#x27;);
+		this.model.set(&#x27;draggableStatus&#x27;, &#x27;enabled&#x27;);
 	};
 
 	exports.draggableEnabled = function draggableEnabled() {
-		return this.modeld.get(&#x27;draggableStatus&#x27;) === &#x27;enabled&#x27;;
+		return this.model.get(&#x27;draggableStatus&#x27;) === &#x27;enabled&#x27;;
 	};
 });
 

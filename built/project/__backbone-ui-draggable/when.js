@@ -1,1 +1,0 @@
-define(["require","exports","module","object-query"],function(e,t,n){var r=e("object-query");n.exports=function(t,n,i){var s=r(t),o=this.modeld;o.on("change",function(){s(o.toJSON())&&n.apply(i,[this])},this)}});

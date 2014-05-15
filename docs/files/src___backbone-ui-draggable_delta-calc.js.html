@@ -108,8 +108,8 @@ define(function (require, exports, module) {
 
 		attemptedDelta = +attemptedDelta;
 
-		var modeld = this.modeld,
-			previousLeft = +modeld.get(&#x27;left&#x27;),
+		var model = this.model,
+			previousLeft = +model.get(&#x27;left&#x27;),
 
 			// convert the attemptedDelta into attemptedLeft
 			attemptedLeft = previousLeft + attemptedDelta;
@@ -117,13 +117,13 @@ define(function (require, exports, module) {
 		var width = +this.$el.width();
 
 		// minimums
-		var minLeft = +modeld.get(&#x27;minLeft&#x27;),
-			minRight = +modeld.get(&#x27;minRight&#x27;),
+		var minLeft = +model.get(&#x27;minLeft&#x27;),
+			minRight = +model.get(&#x27;minRight&#x27;),
 			min = h.max(minLeft, minRight - width);
 
 		// maximums
-		var maxLeft = +modeld.get(&#x27;maxLeft&#x27;),
-			maxRight = +modeld.get(&#x27;maxRight&#x27;),
+		var maxLeft = +model.get(&#x27;maxLeft&#x27;),
+			maxRight = +model.get(&#x27;maxRight&#x27;),
 			max = h.min(maxLeft, maxRight - width);
 
 			// get the allowed left
@@ -144,8 +144,8 @@ define(function (require, exports, module) {
 
 		attemptedDelta = +attemptedDelta;
 
-		var modeld = this.modeld,
-			previousTop = +modeld.get(&#x27;top&#x27;),
+		var model = this.model,
+			previousTop = +model.get(&#x27;top&#x27;),
 
 			// convert the attemptedDelta into attemptedTop
 			attemptedTop = previousTop + attemptedDelta;
@@ -153,13 +153,13 @@ define(function (require, exports, module) {
 		var height = +this.$el.height();
 
 		// minimums
-		var minTop = +modeld.get(&#x27;minTop&#x27;),
-			minBottom = +modeld.get(&#x27;minBottom&#x27;),
+		var minTop = +model.get(&#x27;minTop&#x27;),
+			minBottom = +model.get(&#x27;minBottom&#x27;),
 			min = h.max(minTop, minBottom - height);
 
 		// maximums
-		var maxTop = +modeld.get(&#x27;maxTop&#x27;),
-			maxBottom = +modeld.get(&#x27;maxBottom&#x27;),
+		var maxTop = +model.get(&#x27;maxTop&#x27;),
+			maxBottom = +model.get(&#x27;maxBottom&#x27;),
 			max = h.min(maxTop, maxBottom - height);
 
 			// get the allowed top

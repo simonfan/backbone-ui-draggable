@@ -4,6 +4,13 @@
         "version": "0.0.0"
     },
     "files": {
+        "src/__backbone-ui-draggable/__dropped-when.js": {
+            "name": "src/__backbone-ui-draggable/__dropped-when.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src/__backbone-ui-draggable/animation.js": {
             "name": "src/__backbone-ui-draggable/animation.js",
             "modules": {},
@@ -36,13 +43,6 @@
         },
         "src/__backbone-ui-draggable/helpers.js": {
             "name": "src/__backbone-ui-draggable/helpers.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
-        "src/__backbone-ui-draggable/when.js": {
-            "name": "src/__backbone-ui-draggable/when.js",
             "modules": {},
             "classes": {},
             "fors": {},
@@ -94,6 +94,32 @@
     },
     "classes": {},
     "classitems": [
+        {
+            "file": "src/__backbone-ui-draggable/__dropped-when.js",
+            "line": 6,
+            "description": "Create complex listeners",
+            "itemtype": "method",
+            "name": "when",
+            "params": [
+                {
+                    "name": "criteria",
+                    "description": "\n    The criteria to be passed to objectQuery",
+                    "type": "Object"
+                },
+                {
+                    "name": "callback",
+                    "description": "",
+                    "type": "Function"
+                },
+                {
+                    "name": "context",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": ""
+        },
         {
             "file": "src/__backbone-ui-draggable/animation.js",
             "line": 6,
@@ -180,35 +206,8 @@
             "module": "backbone-ui-draggable"
         },
         {
-            "file": "src/__backbone-ui-draggable/when.js",
-            "line": 6,
-            "description": "Create complex listeners",
-            "itemtype": "method",
-            "name": "when",
-            "params": [
-                {
-                    "name": "criteria",
-                    "description": "\n    The criteria to be passed to objectQuery",
-                    "type": "Object"
-                },
-                {
-                    "name": "callback",
-                    "description": "",
-                    "type": "Function"
-                },
-                {
-                    "name": "context",
-                    "description": "",
-                    "type": "Object",
-                    "optional": true
-                }
-            ],
-            "class": "",
-            "module": "backbone-ui-draggable"
-        },
-        {
             "file": "src/index.js",
-            "line": 60,
+            "line": 65,
             "description": "The class to be added to the draggable html eleemnt.",
             "itemtype": "property",
             "name": "draggableClass",

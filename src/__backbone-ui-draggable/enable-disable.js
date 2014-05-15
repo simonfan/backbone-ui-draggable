@@ -8,10 +8,10 @@ define(function (require, exports, module) {
 	'use strict';
 
 	exports.initializeUIDraggableEnableDisable = function initializeUIDraggableEnableDisable(options) {
-		var modeld = this.modeld;
+		var model = this.model;
 
 		// listen to enable and disable option changes
-		this.listenTo(modeld, 'change:draggableStatus', function (model) {
+		this.listenTo(model, 'change:draggableStatus', function (model) {
 
 			if (this.draggableEnabled()) {
 				// is enabled
@@ -36,7 +36,7 @@ define(function (require, exports, module) {
 	 * @method disableDraggable
 	 */
 	exports.disableDraggable = function disableDraggable() {
-		this.modeld.set('draggableStatus', 'disabled');
+		this.model.set('draggableStatus', 'disabled');
 	};
 
 	/**
@@ -45,10 +45,10 @@ define(function (require, exports, module) {
 	 * @method enableDraggable
 	 */
 	exports.enableDraggable = function enableDraggable() {
-		this.modeld.set('draggableStatus', 'enabled');
+		this.model.set('draggableStatus', 'enabled');
 	};
 
 	exports.draggableEnabled = function draggableEnabled() {
-		return this.modeld.get('draggableStatus') === 'enabled';
+		return this.model.get('draggableStatus') === 'enabled';
 	};
 });

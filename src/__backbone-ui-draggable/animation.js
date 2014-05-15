@@ -39,7 +39,7 @@ define(function (require, exports, module) {
 
 		// run animation
 		this.$el.animate({
-			left: +this.modeld.get('left') + delta
+			left: +this.model.get('left') + delta
 		}, options);
 
 		// return remainder
@@ -81,7 +81,7 @@ define(function (require, exports, module) {
 
 		// run animation
 		this.$el.animate({
-			top: +this.modeld.get('top') + delta
+			top: +this.model.get('top') + delta
 		}, options);
 
 		// return remainder

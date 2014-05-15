@@ -24,7 +24,8 @@ require.config({
 		itr: '../bower_components/itr/built/itr',
 		'object-query': '../bower_components/object-query/built/object-query',
 		'bb-dock': '../bower_components/bb-dock/built/bb-dock',
-		'bb-model-view': '../bower_components/bb-model-view/built/bb-model-view'
+		'bb-model-view': '../bower_components/bb-model-view/built/bb-model-view',
+		dock: '../bower_components/dock/built/dock'
 	},
 	shim: {
 		backbone: {

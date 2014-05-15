@@ -1,6 +1,6 @@
-define(['jquery', 'jquery-ui', './limits.js', './draggable.js', 'bb-model-view'],
+define(['jquery', 'jquery-ui', './limits.js', './draggable.js', 'bb-model-view', 'backbone'],
 
-function ($     ,  undefined  , limits      ,  d              , modelView   ) {
+function ($     ,  undefined  , limits      ,  d              , modelView   , Backbone) {
 
 
 
@@ -34,7 +34,7 @@ function ($     ,  undefined  , limits      ,  d              , modelView   ) {
 
 			this.listenTo(options.draggable, 'move', function (draggable, eventData) {
 
-				this.modeld.set(eventData);
+				this.model.set(eventData);
 
 			}, this);
 		},
@@ -46,6 +46,8 @@ function ($     ,  undefined  , limits      ,  d              , modelView   ) {
 		draggable: d,
 
 		el: $('#event-data'),
+
+		model: new Backbone.Model(),
 
 		map: {
 			axis: '[data-attribute="axis"]',

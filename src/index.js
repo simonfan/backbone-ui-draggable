@@ -23,6 +23,11 @@ define(function (require, exports, module) {
 
 			backbone.view.prototype.initialize.call(this, options);
 
+			// if no model is set, create one before intiializing model view
+			if (!this.model) {
+				this.model = backbone.model();
+			}
+
 			this.initializeModelView(options);
 
 			this.initializeUIDraggable(options);
@@ -54,7 +59,7 @@ define(function (require, exports, module) {
 
 			}, options);
 
-			this.modeld.set(data);
+			this.model.set(data);
 		},
 
 		/**
@@ -68,9 +73,6 @@ define(function (require, exports, module) {
 		events: {
 			mousedown: 'mousedown',
 		},
-
-
-		when: require('./__backbone-ui-draggable/when'),
 
 		axis: 'xy',
 
